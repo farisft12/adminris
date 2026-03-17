@@ -1,0 +1,160 @@
+@import 'tailwindcss';
+
+@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
+@source '../../storage/framework/views/*.php';
+@source '../**/*.blade.php';
+@source '../**/*.js';
+
+@theme {
+    --font-sans: 'DM Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
+        'Segoe UI Symbol', 'Noto Color Emoji';
+}
+
+/* Guest / landing animations */
+@keyframes fade-in-up {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fade-in {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0) rotate(0deg); }
+    50% { transform: translateY(-12px) rotate(2deg); }
+}
+
+@keyframes scale-in {
+    from {
+        opacity: 0;
+        transform: scale(0.96);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.animate-fade-in-up {
+    animation: fade-in-up 0.6s ease-out forwards;
+}
+
+.animate-fade-in {
+    animation: fade-in 0.5s ease-out forwards;
+}
+
+.animate-float {
+    animation: float 6s ease-in-out infinite;
+}
+
+.animate-scale-in {
+    animation: scale-in 0.4s ease-out forwards;
+}
+
+.animate-delay-100 { animation-delay: 0.1s; }
+.animate-delay-200 { animation-delay: 0.2s; }
+.animate-delay-300 { animation-delay: 0.3s; }
+
+/* Guest page: dark card + buttons */
+.guest-hero,
+.guest-page {
+    position: relative;
+}
+
+.btn-guest-primary {
+    background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+    box-shadow: 0 4px 14px 0 rgb(99 102 241 / 0.4);
+}
+
+.btn-guest-primary:hover {
+    background: linear-gradient(135deg, #4f46e5 0%, #4338ca 100%);
+    box-shadow: 0 6px 20px 0 rgb(99 102 241 / 0.5);
+    transform: translateY(-1px);
+}
+
+.input-guest::placeholder {
+    color: rgb(100 116 139 / 0.8);
+}
+
+.input-guest:focus {
+    outline: none;
+}
+
+.opacity-0-init {
+    opacity: 0;
+}
+
+/* Dashboard: modern animations */
+@keyframes dashboard-fade-up {
+    from {
+        opacity: 0;
+        transform: translateY(24px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes dashboard-scale-in {
+    from {
+        opacity: 0;
+        transform: scale(0.92);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+@keyframes dashboard-shine {
+    0% { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
+}
+
+@keyframes dashboard-pulse-soft {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.85; }
+}
+
+.dashboard-enter {
+    animation: dashboard-fade-up 0.6s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+.dashboard-enter-scale {
+    animation: dashboard-scale-in 0.5s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+.dashboard-stagger-1 { animation-delay: 0.05s; opacity: 0; }
+.dashboard-stagger-2 { animation-delay: 0.1s; opacity: 0; }
+.dashboard-stagger-3 { animation-delay: 0.15s; opacity: 0; }
+.dashboard-stagger-4 { animation-delay: 0.2s; opacity: 0; }
+.dashboard-stagger-5 { animation-delay: 0.25s; opacity: 0; }
+.dashboard-stagger-6 { animation-delay: 0.3s; opacity: 0; }
+.dashboard-stagger-7 { animation-delay: 0.35s; opacity: 0; }
+.dashboard-stagger-8 { animation-delay: 0.4s; opacity: 0; }
+.dashboard-stagger-9 { animation-delay: 0.45s; opacity: 0; }
+.dashboard-stagger-10 { animation-delay: 0.5s; opacity: 0; }
+.dashboard-stagger-11 { animation-delay: 0.55s; opacity: 0; }
+.dashboard-stagger-12 { animation-delay: 0.6s; opacity: 0; }
+.dashboard-stagger-13 { animation-delay: 0.65s; opacity: 0; }
+.dashboard-stagger-14 { animation-delay: 0.7s; opacity: 0; }
+.dashboard-stagger-15 { animation-delay: 0.75s; opacity: 0; }
+.dashboard-stagger-16 { animation-delay: 0.8s; opacity: 0; }
+.dashboard-stagger-17 { animation-delay: 0.85s; opacity: 0; }
+.dashboard-stagger-18 { animation-delay: 0.9s; opacity: 0; }
+.dashboard-stagger-19 { animation-delay: 0.95s; opacity: 0; }
+.dashboard-stagger-20 { animation-delay: 1s; opacity: 0; }
+
+/* App nav: subtle transitions */
+.nav-link {
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
