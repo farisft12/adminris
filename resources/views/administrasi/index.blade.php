@@ -3,139 +3,203 @@
 @section('title', 'Data Administrasi')
 
 @section('content')
-<div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-    @if(isset($selectedSubKegiatan) && $selectedSubKegiatan && request('kode_rekening_id'))
-        <nav class="mb-4 flex items-center gap-2 text-sm text-slate-600">
-            <a href="{{ route('dashboard') }}" class="hover:text-slate-900">Dashboard</a>
-            <span aria-hidden="true">/</span>
-            <a href="{{ route('sub-kegiatan.show', $selectedSubKegiatan) }}" class="hover:text-slate-900">{{ $selectedSubKegiatan->nama_sub_kegiatan }}</a>
-            <span aria-hidden="true">/</span>
-            <a href="{{ route('sub-kegiatan.kode-rekenings.index', $selectedSubKegiatan) }}" class="hover:text-slate-900">Kode Rekening</a>
-            <span aria-hidden="true">/</span>
-            <span class="font-medium text-slate-900">Data Administrasi</span>
-        </nav>
-    @endif
-    <div class="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <div>
-            <h1 class="text-2xl font-semibold text-slate-800">Data Administrasi</h1>
-            @if(isset($selectedSubKegiatan) && $selectedSubKegiatan)
-                <p class="mt-1 text-sm text-slate-600">Khusus sub kegiatan: <span class="font-medium text-slate-800">{{ $selectedSubKegiatan->nama_sub_kegiatan }}</span></p>
-            @endif
-        </div>
-        <a href="{{ route('administrasi.create', request()->only('sub_kegiatan_id', 'year_id', 'kode_rekening_id')) }}" class="inline-flex justify-center rounded-lg bg-slate-800 px-4 py-2 text-sm font-medium text-white hover:bg-slate-700 transition">Tambah Data</a>
+<div class="relative min-h-screen bg-slate-50 pb-12">
+    {{-- Background Decoration - Fixed: pointer-events-none agar tidak menghalangi klik --}}
+    <div class="pointer-events-none absolute inset-0 -z-10 overflow-hidden" aria-hidden="true">
+        <div class="absolute -left-20 top-20 h-96 w-96 rounded-full bg-blue-100/40 blur-3xl opacity-50"></div>
+        <div class="absolute right-0 bottom-10 h-96 w-96 rounded-full bg-indigo-100/30 blur-3xl opacity-50"></div>
     </div>
 
-    <form method="GET" action="{{ route('administrasi.index') }}" class="mb-6 flex flex-wrap items-end gap-4 rounded-lg border border-slate-200 bg-white p-4">
-        <div>
-            <label for="year_id" class="mb-1 block text-sm font-medium text-slate-700">Tahun</label>
-            <select id="year_id" name="year_id" class="rounded-lg border border-slate-300 px-3 py-2 text-sm">
-                <option value="">-- Semua Tahun --</option>
-                @foreach($years as $y)
-                    <option value="{{ $y->id }}" {{ request('year_id') == $y->id ? 'selected' : '' }}>{{ $y->tahun }}</option>
-                @endforeach
-            </select>
-        </div>
-        <div>
-            <label for="sub_kegiatan_id" class="mb-1 block text-sm font-medium text-slate-700">Sub Kegiatan</label>
-            <select id="sub_kegiatan_id" name="sub_kegiatan_id" class="rounded-lg border border-slate-300 px-3 py-2 text-sm min-w-[200px]">
-                <option value="">-- Semua Sub Kegiatan --</option>
-                @foreach($subKegiatans as $sk)
-                    <option value="{{ $sk->id }}" {{ request('sub_kegiatan_id') == $sk->id ? 'selected' : '' }}>{{ $sk->nama_sub_kegiatan }}</option>
-                @endforeach
-            </select>
-        </div>
-        <div>
-            <label for="kode_rekening_id" class="mb-1 block text-sm font-medium text-slate-700">Kode Rekening</label>
-            <select id="kode_rekening_id" name="kode_rekening_id" class="rounded-lg border border-slate-300 px-3 py-2 text-sm min-w-[220px]">
-                <option value="">-- Semua Kode Rekening --</option>
-                @foreach($kodeRekenings as $kr)
-                    <option value="{{ $kr->id }}" {{ request('kode_rekening_id') == $kr->id ? 'selected' : '' }}>{{ $kr->kode_rekening }} - {{ $kr->nama_rekening }}</option>
-                @endforeach
-            </select>
-        </div>
-        <button type="submit" class="rounded-lg bg-slate-700 px-4 py-2 text-sm font-medium text-white hover:bg-slate-600">Filter</button>
-    </form>
-
-    <div class="overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm">
-        <div class="overflow-x-auto">
-            <table class="min-w-full divide-y divide-slate-200">
-                <thead class="bg-slate-50">
-                    <tr>
-                        <th class="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-slate-600">No</th>
-                        <th class="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-slate-600">Uraian Belanja</th>
-                        <th class="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-slate-600">Tanggal Nota Setuju</th>
-                        <th class="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-slate-600">Kode Rekening</th>
-                        <th class="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-slate-600">Etalase</th>
-                        <th class="px-4 py-3 text-right text-xs font-medium uppercase tracking-wider text-slate-600">PPN</th>
-                        <th class="px-4 py-3 text-right text-xs font-medium uppercase tracking-wider text-slate-600">PPH 23</th>
-                        <th class="px-4 py-3 text-right text-xs font-medium uppercase tracking-wider text-slate-600">PPH 21</th>
-                        <th class="px-4 py-3 text-right text-xs font-medium uppercase tracking-wider text-slate-600">Tagihan</th>
-                        <th class="px-4 py-3 text-right text-xs font-medium uppercase tracking-wider text-slate-600">Total</th>
-                        <th class="px-4 py-3 text-center text-xs font-medium uppercase tracking-wider text-slate-600">Aksi</th>
-                    </tr>
-                </thead>
-                <tbody class="divide-y divide-slate-200 bg-white">
-                    @forelse($administrasis as $a)
-                        <tr class="hover:bg-slate-50">
-                            <td class="whitespace-nowrap px-4 py-3 text-sm text-slate-900">{{ $a->no }}</td>
-                            <td class="px-4 py-3 text-sm text-slate-900 max-w-xs truncate" title="{{ $a->uraian_belanja }}">{{ $a->uraian_belanja }}</td>
-                            <td class="whitespace-nowrap px-4 py-3 text-sm text-slate-900">{{ $a->tanggal_nota_persetujuan?->format('d/m/Y') ?? '-' }}</td>
-                            <td class="whitespace-nowrap px-4 py-3 text-sm text-slate-900">{{ $a->kodeRekening ? $a->kodeRekening->kode_rekening . ' - ' . $a->kodeRekening->nama_rekening : '-' }}</td>
-                            <td class="whitespace-nowrap px-4 py-3 text-sm text-slate-900">{{ $a->etalase?->nama_etalase ?? '-' }}</td>
-                            <td class="whitespace-nowrap px-4 py-3 text-right text-sm text-slate-900">{{ number_format($a->ppn ?? 0, 0, ',', '.') }}</td>
-                            <td class="whitespace-nowrap px-4 py-3 text-right text-sm text-slate-900">{{ number_format($a->pph23 ?? 0, 0, ',', '.') }}</td>
-                            <td class="whitespace-nowrap px-4 py-3 text-right text-sm text-slate-900">{{ number_format($a->pph21 ?? 0, 0, ',', '.') }}</td>
-                            <td class="whitespace-nowrap px-4 py-3 text-right text-sm text-slate-900">{{ number_format($a->tagihan, 0, ',', '.') }}</td>
-                            <td class="whitespace-nowrap px-4 py-3 text-right text-sm font-medium text-slate-900 tabular-nums">{{ number_format($a->total_bersih, 0, ',', '.') }}</td>
-                            <td class="whitespace-nowrap px-4 py-3">
-                                <div class="flex items-center justify-center gap-2">
-                                    <a href="{{ route('administrasi.edit', $a) }}" class="rounded p-1.5 text-slate-600 hover:bg-slate-100 hover:text-slate-900" title="Edit">
-                                        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
-                                    </a>
-                                    @can('delete', $a)
-                                        <form action="{{ route('administrasi.destroy', $a) }}" method="POST" class="inline" onsubmit="return confirm('Yakin hapus?');">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit" class="rounded p-1.5 text-slate-600 hover:bg-red-50 hover:text-red-600" title="Hapus">
-                                                <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
-                                            </button>
-                                        </form>
-                                    @endcan
-                                    <a href="{{ route('administrasi.kwitansi', $a) }}" target="_blank" class="rounded p-1.5 text-slate-600 hover:bg-slate-100 hover:text-slate-900" title="Print Kwitansi">
-                                        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2h-6a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/></svg>
-                                    </a>
-                                    <a href="{{ route('administrasi.nota-persetujuan', $a) }}" target="_blank" class="rounded p-1.5 text-slate-600 hover:bg-slate-100 hover:text-slate-900" title="Print Nota Persetujuan">
-                                        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-                                    </a>
-                                </div>
-                            </td>
-                        </tr>
-                    @empty
-                        <tr>
-                            <td colspan="11" class="px-4 py-8 text-center text-sm text-slate-500">Belum ada data.</td>
-                        </tr>
-                    @endforelse
-                </tbody>
-                @if($administrasis->isNotEmpty())
-                <tfoot class="bg-slate-100 font-medium">
-                    <tr>
-                        <td colspan="5" class="px-4 py-3 text-sm text-slate-700">Rekap Total (filter)</td>
-                        <td class="whitespace-nowrap px-4 py-3 text-right text-sm text-slate-900">{{ number_format($rekap['ppn'], 0, ',', '.') }}</td>
-                        <td class="whitespace-nowrap px-4 py-3 text-right text-sm text-slate-900">{{ number_format($rekap['pph23'], 0, ',', '.') }}</td>
-                        <td class="whitespace-nowrap px-4 py-3 text-right text-sm text-slate-900">{{ number_format($rekap['pph21'], 0, ',', '.') }}</td>
-                        <td class="whitespace-nowrap px-4 py-3 text-right text-sm text-slate-900">{{ number_format($rekap['tagihan'], 0, ',', '.') }}</td>
-                        <td class="whitespace-nowrap px-4 py-3 text-right text-sm text-slate-900 font-medium tabular-nums">{{ number_format($rekap['total_bersih'], 0, ',', '.') }}</td>
-                        <td class="whitespace-nowrap px-4 py-3"></td>
-                    </tr>
-                </tfoot>
+    <div class="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+        {{-- Navigation / Breadcrumb - Fixed: Semua link aktif bisa diklik --}}
+        @if(isset($selectedSubKegiatan) && $selectedSubKegiatan)
+            <nav class="mb-6 flex flex-wrap items-center gap-2 text-[11px] font-bold uppercase tracking-[0.15em] text-slate-400 animate-fade-up">
+                <a href="{{ route('dashboard') }}" class="hover:text-primary transition-colors flex items-center">
+                    <i class="fa-solid fa-house-chimney mr-1.5 text-[10px]"></i> Dashboard
+                </a>
+                
+                <i class="fa-solid fa-chevron-right text-[8px] opacity-40"></i>
+                
+                <a href="{{ route('sub-kegiatan.show', $selectedSubKegiatan) }}" class="hover:text-primary transition-colors truncate max-w-[200px]">
+                    {{ $selectedSubKegiatan->nama_sub_kegiatan }}
+                </a>
+                
+                @if(request('kode_rekening_id'))
+                    <i class="fa-solid fa-chevron-right text-[8px] opacity-40"></i>
+                    <a href="{{ route('sub-kegiatan.kode-rekenings.index', $selectedSubKegiatan) }}" class="hover:text-primary transition-colors">
+                        Kode Rekening
+                    </a>
+                    <i class="fa-solid fa-chevron-right text-[8px] opacity-40"></i>
+                    <span class="text-slate-900 font-black">Data Administrasi</span>
+                @else
+                    <i class="fa-solid fa-chevron-right text-[8px] opacity-40"></i>
+                    <span class="text-slate-900 font-black">Kode Rekening</span>
                 @endif
-            </table>
+            </nav>
+        @endif
+
+        {{-- Header Section --}}
+        <div class="mb-8 flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between animate-fade-up">
+            <div>
+                <h1 class="text-3xl font-bold tracking-tight text-slate-900">Administrasi Belanja</h1>
+                @if(isset($selectedSubKegiatan) && $selectedSubKegiatan)
+                    <div class="mt-2 flex items-center gap-2 text-sm text-slate-500">
+                        <i class="fa-solid fa-folder-tree text-slate-300"></i>
+                        <span>Kegiatan: <span class="font-semibold text-slate-700">{{ $selectedSubKegiatan->nama_sub_kegiatan }}</span></span>
+                    </div>
+                @endif
+            </div>
+            
+            <a href="{{ route('administrasi.create', request()->only('sub_kegiatan_id', 'year_id', 'kode_rekening_id')) }}" 
+                class="inline-flex items-center justify-center gap-2 rounded-xl bg-slate-900 px-6 py-2.5 text-sm font-bold text-white shadow-sm hover:bg-slate-800 transition-all active:scale-95">
+                <i class="fa-solid fa-plus text-xs"></i>
+                Tambah Rekaman
+            </a>
         </div>
+
+        {{-- Filter Section --}}
+        <div class="mb-8 animate-fade-up" style="animation-delay: 100ms">
+            <form method="GET" action="{{ route('administrasi.index') }}" 
+                class="grid grid-cols-1 gap-4 rounded-xl border border-slate-200 bg-white/80 p-5 shadow-sm backdrop-blur-sm sm:grid-cols-2 lg:grid-cols-4 lg:items-end">
+                
+                <div class="space-y-1.5">
+                    <label class="text-[10px] font-black uppercase tracking-wider text-slate-400 ml-1">Tahun</label>
+                    <select name="year_id" class="w-full rounded-lg border-slate-200 bg-slate-50 px-3 py-2 text-sm font-medium focus:border-slate-900 focus:ring-0 transition-all cursor-pointer">
+                        <option value="">-- Semua Tahun --</option>
+                        @foreach($years as $y)
+                            <option value="{{ $y->id }}" {{ request('year_id') == $y->id ? 'selected' : '' }}>{{ $y->tahun }}</option>
+                        @endforeach
+                    </select>
+                </div>
+
+                <div class="space-y-1.5">
+                    <label class="text-[10px] font-black uppercase tracking-wider text-slate-400 ml-1">Sub Kegiatan</label>
+                    <select name="sub_kegiatan_id" class="w-full rounded-lg border-slate-200 bg-slate-50 px-3 py-2 text-sm font-medium focus:border-slate-900 focus:ring-0 transition-all cursor-pointer">
+                        <option value="">-- Semua Kegiatan --</option>
+                        @foreach($subKegiatans as $sk)
+                            <option value="{{ $sk->id }}" {{ request('sub_kegiatan_id') == $sk->id ? 'selected' : '' }}>{{ $sk->nama_sub_kegiatan }}</option>
+                        @endforeach
+                    </select>
+                </div>
+
+                <div class="space-y-1.5">
+                    <label class="text-[10px] font-black uppercase tracking-wider text-slate-400 ml-1">Kode Rekening</label>
+                    <select name="kode_rekening_id" class="w-full rounded-lg border-slate-200 bg-slate-50 px-3 py-2 text-sm font-medium focus:border-slate-900 focus:ring-0 transition-all cursor-pointer">
+                        <option value="">-- Semua Rekening --</option>
+                        @foreach($kodeRekenings as $kr)
+                            <option value="{{ $kr->id }}" {{ request('kode_rekening_id') == $kr->id ? 'selected' : '' }}>{{ $kr->kode_rekening }} - {{ $kr->nama_rekening }}</option>
+                        @endforeach
+                    </select>
+                </div>
+
+                <button type="submit" class="h-10 flex items-center justify-center gap-2 rounded-lg border border-slate-200 bg-white px-4 text-sm font-bold text-slate-700 hover:bg-slate-50 hover:text-slate-900 transition-all">
+                    <i class="fa-solid fa-sliders text-xs opacity-50"></i>
+                    Terapkan Filter
+                </button>
+            </form>
+        </div>
+
+        {{-- Table Section --}}
+        <div class="animate-fade-up border border-slate-200 bg-white rounded-xl shadow-sm overflow-hidden" style="animation-delay: 200ms">
+            <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-slate-100">
+                    <thead>
+                        <tr class="bg-slate-50/50">
+                            <th class="px-6 py-4 text-left text-[10px] font-black uppercase tracking-widest text-slate-400">No</th>
+                            <th class="px-6 py-4 text-left text-[10px] font-black uppercase tracking-widest text-slate-400">Uraian / Deskripsi</th>
+                            <th class="px-6 py-4 text-left text-[10px] font-black uppercase tracking-widest text-slate-400">Tgl. Nota</th>
+                            <th class="px-6 py-4 text-right text-[10px] font-black uppercase tracking-widest text-slate-400 font-mono">Pajak</th>
+                            <th class="px-6 py-4 text-right text-[10px] font-black uppercase tracking-widest text-slate-400">Tagihan</th>
+                            <th class="px-6 py-4 text-right text-[10px] font-black uppercase tracking-widest text-slate-900">Total Bersih</th>
+                            <th class="px-6 py-4 text-center text-[10px] font-black uppercase tracking-widest text-slate-400">Opsi</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-50">
+                        @forelse($administrasis as $a)
+                            <tr class="group hover:bg-slate-50/50 transition-colors">
+                                <td class="px-6 py-4 text-sm font-medium text-slate-400">{{ $a->no }}</td>
+                                <td class="px-6 py-4">
+                                    <div class="text-sm font-bold text-slate-900 leading-snug">{{ $a->uraian_belanja }}</div>
+                                    <div class="mt-1 flex items-center gap-1.5 text-[10px] font-mono font-medium text-slate-400 uppercase">
+                                        {{ $a->kodeRekening?->kode_rekening ?? '-' }}
+                                    </div>
+                                </td>
+                                <td class="whitespace-nowrap px-6 py-4 text-sm text-slate-500">
+                                    {{ $a->tanggal_nota_persetujuan?->format('d/m/Y') ?? '-' }}
+                                </td>
+                                <td class="whitespace-nowrap px-6 py-4 text-right text-sm text-slate-500 font-mono">
+                                    {{ number_format(($a->ppn ?? 0) + ($a->pph23 ?? 0) + ($a->pph21 ?? 0), 0, ',', '.') }}
+                                </td>
+                                <td class="whitespace-nowrap px-6 py-4 text-right text-sm text-slate-500 font-mono">
+                                    {{ number_format($a->tagihan, 0, ',', '.') }}
+                                </td>
+                                <td class="whitespace-nowrap px-6 py-4 text-right">
+                                    <span class="text-sm font-black text-slate-900 tabular-nums">
+                                        {{ number_format($a->total_bersih, 0, ',', '.') }}
+                                    </span>
+                                </td>
+                                <td class="whitespace-nowrap px-6 py-4 text-center">
+                                    <div class="flex items-center justify-center gap-4 text-slate-300">
+                                        <a href="{{ route('administrasi.edit', $a) }}" class="hover:text-slate-900 transition-colors" title="Edit Data">
+                                            <i class="fa-solid fa-pen-to-square"></i>
+                                        </a>
+                                        <a href="{{ route('administrasi.kwitansi', $a) }}" target="_blank" class="hover:text-emerald-600 transition-colors" title="Cetak Kwitansi">
+                                            <i class="fa-solid fa-receipt"></i>
+                                        </a>
+                                        <a href="{{ route('administrasi.nota-persetujuan', $a) }}" target="_blank" class="hover:text-blue-600 transition-colors" title="Cetak Nota Persetujuan">
+                                            <i class="fa-solid fa-file-signature"></i>
+                                        </a>
+                                        @can('delete', $a)
+                                            <form action="{{ route('administrasi.destroy', $a) }}" method="POST" class="inline" onsubmit="return confirm('Hapus data ini?');">
+                                                @csrf @method('DELETE')
+                                                <button type="submit" class="hover:text-red-500 transition-colors">
+                                                    <i class="fa-solid fa-trash-can"></i>
+                                                </button>
+                                            </form>
+                                        @endcan
+                                    </div>
+                                </td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="7" class="px-6 py-20 text-center text-slate-400">
+                                    <p class="text-sm">Tidak ada data ditemukan.</p>
+                                </td>
+                            </tr>
+                        @endforelse
+                    </tbody>
+                    @if($administrasis->isNotEmpty())
+                        <tfoot class="bg-slate-50/50 border-t border-slate-100">
+                            <tr class="font-bold">
+                                <td colspan="3" class="px-6 py-5 text-[10px] font-black uppercase tracking-widest text-slate-400 text-center">Rekapitulasi Total</td>
+                                <td class="px-6 py-5 text-right text-sm text-slate-600 font-mono">{{ number_format($rekap['ppn'] + $rekap['pph23'] + $rekap['pph21'], 0, ',', '.') }}</td>
+                                <td class="px-6 py-5 text-right text-sm text-slate-600 font-mono">{{ number_format($rekap['tagihan'], 0, ',', '.') }}</td>
+                                <td class="px-6 py-5 text-right text-lg text-slate-900 tabular-nums font-black leading-none">
+                                    <span class="text-xs font-bold text-slate-400 mr-1 italic">Rp</span>{{ number_format($rekap['total_bersih'], 0, ',', '.') }}
+                                </td>
+                                <td></td>
+                            </tr>
+                        </tfoot>
+                    @endif
+                </table>
+            </div>
+        </div>
+
         @if($administrasis->hasPages())
-            <div class="border-t border-slate-200 px-4 py-3">
+            <div class="mt-6">
                 {{ $administrasis->withQueryString()->links() }}
             </div>
         @endif
     </div>
 </div>
+
+<style>
+    @keyframes fadeUp {
+        0% { opacity: 0; transform: translateY(10px); }
+        100% { opacity: 1; transform: translateY(0); }
+    }
+    .animate-fade-up {
+        animation: fadeUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+</style>
 @endsection

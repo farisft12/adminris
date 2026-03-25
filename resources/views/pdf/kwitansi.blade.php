@@ -214,7 +214,7 @@
                 <td style="width: 25%; vertical-align: top; text-align: center; font-size: 8pt;">
                     Yang menerima,
                     <br><br><br><br><br>
-                    <span class="fw-bold underline">{{ $penerimaNama ?: '&nbsp;' }}</span>
+                    <span class="fw-bold underline">{{ $penerimaNama ?: '-' }}</span>
                 </td>
             </tr>
         </table>

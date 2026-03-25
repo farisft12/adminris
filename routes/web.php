@@ -12,7 +12,16 @@ Route::get('/', function () {
 
 require __DIR__.'/auth.php';
 
-Route::middleware(['auth'])->group(function () {
+Route::middleware('guest')->group(function () {
+    Route::get('auth/google', [\App\Http\Controllers\Auth\GoogleController::class, 'redirectToGoogle'])->name('google.login');
+    Route::get('auth/google/callback', [\App\Http\Controllers\Auth\GoogleController::class, 'handleGoogleCallback'])->name('google.callback');
+});
+
+Route::middleware(['auth', 'verified'])->group(function () {
+    Route::get('/profile', [\App\Http\Controllers\ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [\App\Http\Controllers\ProfileController::class, 'update'])->name('profile.update');
+    Route::put('/profile/password', [\App\Http\Controllers\ProfileController::class, 'updatePassword'])->name('profile.password.update');
+
     Route::get('/dashboard', DashboardController::class)->name('dashboard');
     Route::get('/api/etalases', [EtalaseController::class, 'index'])->name('api.etalases.index');
     Route::get('/api/administrasi/next-no', [\App\Http\Controllers\Api\AdministrasiNoController::class, 'nextNo'])->name('api.administrasi.next-no');

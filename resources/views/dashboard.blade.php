@@ -3,110 +3,176 @@
 @section('title', 'Dashboard')
 
 @section('content')
-<div class="relative min-h-[60vh]">
-    {{-- Soft background --}}
-    <div class="pointer-events-none absolute inset-0 -top-8 -z-10 overflow-hidden">
-        <div class="absolute -left-40 -top-40 h-80 w-80 rounded-full bg-indigo-100/40 blur-3xl"></div>
-        <div class="absolute -bottom-40 -right-40 h-80 w-80 rounded-full bg-slate-200/30 blur-3xl"></div>
-        <div class="absolute left-1/2 top-0 h-64 w-96 -translate-x-1/2 rounded-full bg-sky-100/30 blur-3xl"></div>
+<div class="relative min-h-screen overflow-hidden bg-slate-50/50">
+    {{-- Decorative Background Elements (Consistent with Landing/Login) --}}
+    <div class="pointer-events-none absolute inset-0 -z-10">
+        <div class="absolute -left-20 top-0 h-[500px] w-[500px] rounded-full bg-blue-100/50 blur-3xl opacity-60 animate-pulse"></div>
+        <div class="absolute -right-20 bottom-0 h-[500px] w-[500px] rounded-full bg-indigo-100/50 blur-3xl opacity-60"></div>
     </div>
 
-    <div class="mx-auto max-w-6xl px-4 py-8 sm:px-6 lg:px-8 lg:py-10">
-        {{-- Header --}}
-        <header class="dashboard-enter mb-10 sm:mb-12">
-            <p class="mb-2 text-sm font-medium uppercase tracking-widest text-indigo-600">Adminris</p>
-            <h1 class="text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">Dashboard</h1>
-            <p class="mt-3 max-w-xl text-slate-600 sm:text-lg">Pilih tahun lalu sub kegiatan untuk mengelola data belanja.</p>
+    <div class="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
+        {{-- Header Section --}}
+        <header class="mb-12 animate-fade-up">
+            <div class="flex items-center gap-3 mb-4">
+                <div class="bg-primary text-white p-2.5 rounded-xl shadow-lg shadow-blue-900/20">
+                    <i class="fa-solid fa-chart-pie text-xl"></i>
+                </div>
+                <span class="text-sm font-bold uppercase tracking-[0.2em] text-primary">Panel Administrasi</span>
+            </div>
+            <h1 class="text-4xl font-extrabold tracking-tight text-slate-900 sm:text-5xl">
+                Dashboard <span class="text-transparent bg-clip-text bg-gradient-to-r from-primary to-secondary">Keuangan</span>
+            </h1>
+            <p class="mt-4 max-w-2xl text-lg text-slate-500 leading-relaxed">
+                Silakan pilih tahun anggaran untuk mulai mengelola Sub Kegiatan dan dokumen belanja.
+            </p>
         </header>
 
-        {{-- Pilih Tahun --}}
-        <section class="mb-12">
-            <h2 class="dashboard-enter dashboard-stagger-1 mb-5 text-sm font-semibold uppercase tracking-wider text-slate-500">Pilih Tahun</h2>
-            <div class="grid grid-cols-2 gap-4 sm:flex sm:flex-wrap sm:gap-5">
+        {{-- Section: Pilih Tahun --}}
+        <section class="mb-16">
+            <div class="flex items-center gap-2 mb-6 ml-1 animate-fade-up delay-100">
+                <i class="fa-solid fa-calendar-days text-primary/60"></i>
+                <h2 class="text-sm font-bold uppercase tracking-wider text-slate-400">Pilih Tahun Anggaran</h2>
+            </div>
+            
+            <div class="grid grid-cols-2 gap-4 sm:flex sm:flex-wrap sm:gap-6">
                 @foreach($years as $index => $year)
                     @php
                         $isActive = $yearId == $year->id;
-                        $stagger = min($index + 2, 20);
+                        $delay = min(($index + 2) * 100, 1000);
                     @endphp
                     <a href="{{ route('dashboard', ['year_id' => $year->id]) }}"
-                        class="dashboard-enter dashboard-stagger-{{ $stagger }} group relative flex min-h-[80px] items-center justify-center overflow-hidden rounded-2xl border px-6 py-5 text-center transition-all duration-300 ease-out focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 sm:min-h-0 sm:min-w-[130px] sm:px-8 sm:py-6 {{ $isActive ? 'border-indigo-200 bg-gradient-to-br from-indigo-600 to-indigo-700 text-white shadow-lg shadow-indigo-500/25 scale-[1.02]' : 'border-slate-200/80 bg-white/80 text-slate-700 shadow-sm backdrop-blur-sm hover:-translate-y-1 hover:border-slate-300 hover:shadow-lg hover:shadow-slate-200/50 active:scale-[0.98]' }}">
+                        style="animation-delay: {{ $delay }}ms"
+                        class="animate-fade-up relative flex min-h-[100px] w-full sm:w-auto sm:min-w-[140px] flex-col items-center justify-center overflow-hidden rounded-[2rem] border transition-all duration-500 ease-out group {{ $isActive ? 'border-primary text-white shadow-2xl shadow-blue-500/30 scale-105 z-10' : 'border-white bg-white/70 text-slate-600 shadow-sm backdrop-blur-md hover:-translate-y-2 hover:shadow-xl hover:border-blue-200 hover:text-primary active:scale-95' }}">
+                        
                         @if($isActive)
-                            <div class="absolute inset-0 bg-gradient-to-br from-white/20 to-transparent"></div>
-                            <span class="absolute right-3 top-3 opacity-90 sm:right-4 sm:top-4" aria-hidden="true">
-                                <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
-                            </span>
+                            {{-- Full Submerge Liquid CSS Animation --}}
+                            <div class="absolute inset-0 overflow-hidden rounded-[2rem] z-0 pointer-events-none">
+                                <div class="absolute inset-0 animate-water-fill-up">
+                                    {{-- Back Wave --}}
+                                    <div class="absolute bottom-[calc(100%-10px)] left-0 w-[200%] h-[30px] opacity-40 animate-wave-flow-slow"  
+                                         style="background-image: url('data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 1200 120\' preserveAspectRatio=\'none\'%3E%3Cpath d=\'M0 60C300 120 300 0 600 60C900 120 900 0 1200 60L1200 120L0 120Z\' fill=\'%231e40af\'/%3E%3C/svg%3E'); background-size: 50% 100%;"></div>
+                                    {{-- Front Wave --}}
+                                    <div class="absolute bottom-[100%] left-0 w-[200%] h-[30px] animate-wave-flow" 
+                                         style="background-image: url('data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 1200 120\' preserveAspectRatio=\'none\'%3E%3Cpath d=\'M0 60C300 0 300 120 600 60C900 0 900 120 1200 60L1200 120L0 120Z\' fill=\'%231e40af\'/%3E%3C/svg%3E'); background-size: 50% 100%;"></div>
+                                    {{-- Base Solid Water --}}
+                                    <div class="absolute inset-0 bg-primary"></div>
+                                </div>
+                            </div>
+                            <div class="absolute top-0 right-0 p-3 z-10">
+                                <i class="fa-solid fa-circle-check text-white/80 text-lg"></i>
+                            </div>
                         @endif
-                        <span class="relative text-2xl font-bold sm:text-3xl">{{ $year->tahun }}</span>
+                        
+                        <span class="relative z-10 text-3xl font-black tracking-tighter">{{ $year->tahun }}</span>
+                        <span class="relative z-10 text-[10px] uppercase font-bold tracking-widest opacity-60 mt-1">Tahun Aktif</span>
+                        
+                        @if(!$isActive)
+                            <div class="absolute bottom-0 w-full h-1 bg-primary translate-y-full group-hover:translate-y-0 transition-transform duration-300"></div>
+                        @endif
                     </a>
                 @endforeach
             </div>
         </section>
 
         @if($yearId)
-        {{-- Sub Kegiatan --}}
-        <section>
-            <div class="dashboard-enter dashboard-stagger-5 mb-5 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-                <h2 class="text-sm font-semibold uppercase tracking-wider text-slate-500">Sub Kegiatan — Tahun {{ $selectedYear->tahun ?? '' }}</h2>
-                <form action="{{ route('dashboard') }}" method="get" class="flex gap-2">
+        {{-- Section: Sub Kegiatan --}}
+        <section class="animate-fade-up" style="animation-delay: 400ms">
+            <div class="mb-8 flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
+                <div>
+                    <h2 class="text-2xl font-bold text-slate-800">Sub Kegiatan</h2>
+                    <p class="text-slate-500 text-sm mt-1">Menampilkan data untuk tahun anggaran <b>{{ $selectedYear->tahun ?? '' }}</b></p>
+                </div>
+
+                <form action="{{ route('dashboard') }}" method="get" class="relative group">
                     <input type="hidden" name="year_id" value="{{ $yearId }}">
-                    <label for="dashboard-search" class="sr-only">Cari sub kegiatan</label>
-                    <input id="dashboard-search" type="search" name="search" value="{{ old('search', $search ?? '') }}"
-                        placeholder="Cari nama atau kode sub kegiatan..."
-                        class="w-full min-w-[200px] rounded-xl border border-slate-200/80 bg-white/80 px-4 py-2.5 text-slate-700 shadow-sm backdrop-blur-sm placeholder:text-slate-400 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 sm:w-64">
-                    <button type="submit" class="inline-flex items-center justify-center rounded-xl border border-slate-200/80 bg-white/80 px-4 py-2.5 text-slate-700 shadow-sm backdrop-blur-sm hover:border-indigo-200 hover:bg-indigo-50 hover:text-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
-                        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
-                        <span class="ml-1.5 sm:ml-2">Cari</span>
-                    </button>
+                    <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400 group-focus-within:text-primary transition-colors">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                    </div>
+                    <input type="search" name="search" value="{{ old('search', $search ?? '') }}"
+                        placeholder="Cari kode atau nama kegiatan..."
+                        class="w-full lg:w-80 pl-11 pr-4 py-3.5 bg-white/80 border border-transparent rounded-2xl shadow-sm backdrop-blur-md focus:ring-4 focus:ring-blue-100 focus:bg-white focus:border-primary outline-none transition-all">
                 </form>
             </div>
+
             @if($subKegiatans->isEmpty())
-                <div class="dashboard-enter dashboard-stagger-6 rounded-2xl border border-slate-200/80 bg-white/60 px-8 py-14 text-center backdrop-blur-sm">
-                    <div class="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-slate-100 text-slate-400">
-                        <svg class="h-8 w-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+                <div class="rounded-[2.5rem] border-2 border-dashed border-slate-200 bg-white/40 px-8 py-20 text-center backdrop-blur-sm">
+                    <div class="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-3xl bg-slate-100 text-slate-300">
+                        <i class="fa-solid fa-folder-open text-3xl"></i>
                     </div>
-                    @if(!empty($search))
-                        <p class="mt-5 text-base font-medium text-slate-600">Tidak ada sub kegiatan yang cocok dengan "{{ $search }}".</p>
-                        <p class="mt-1 text-sm text-slate-500">Coba kata kunci lain atau kosongkan pencarian.</p>
-                    @else
-                        <p class="mt-5 text-base font-medium text-slate-600">Belum ada sub kegiatan untuk tahun ini.</p>
-                        <p class="mt-1 text-sm text-slate-500">Data sub kegiatan dapat ditambahkan oleh administrator.</p>
-                    @endif
+                    <h3 class="text-xl font-bold text-slate-700">Tidak ada data ditemukan</h3>
+                    <p class="mt-2 text-slate-500 max-w-xs mx-auto text-sm">Coba kata kunci lain atau hubungi administrator untuk input data baru.</p>
                 </div>
             @else
-                <ul class="flex flex-col gap-4" role="list">
+                <div class="grid gap-4">
                     @foreach($subKegiatans as $index => $sk)
-                        @php $stagger = min($index + 7, 20); @endphp
-                        <li class="dashboard-enter dashboard-stagger-{{ $stagger }}">
+                        <div class="animate-fade-up" style="animation-delay: {{ ($index + 1) * 50 + 500 }}ms">
                             <a href="{{ route('sub-kegiatan.show', $sk) }}{{ $yearId ? '?year_id=' . $yearId : '' }}"
-                                class="group flex min-h-[72px] w-full items-center gap-4 rounded-xl border border-slate-200/80 bg-white/80 px-6 py-4 shadow-sm backdrop-blur-sm transition-all duration-300 ease-out hover:border-indigo-200 hover:bg-white hover:shadow-md hover:shadow-indigo-500/10 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 active:scale-[0.99] sm:min-h-[80px] sm:px-8 sm:py-5">
-                                <span class="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-indigo-50 to-slate-100 text-indigo-600 transition-all duration-300 group-hover:from-indigo-600 group-hover:to-indigo-700 group-hover:text-white sm:h-12 sm:w-12">
-                                    <svg class="h-5 w-5 sm:h-6 sm:w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-                                </span>
-                                <div class="min-w-0 flex-1">
-                                    <span class="block font-semibold text-slate-900 transition-colors group-hover:text-indigo-700">{{ $sk->nama_sub_kegiatan }}</span>
-                                    @if($sk->kode_sub)
-                                        <span class="mt-0.5 block text-sm text-slate-500">{{ $sk->kode_sub }}</span>
-                                    @endif
+                                class="group flex items-center gap-5 rounded-[1.5rem] border border-white bg-white/60 p-5 shadow-sm backdrop-blur-md transition-all duration-300 hover:shadow-xl hover:shadow-blue-900/5 hover:bg-white hover:border-blue-100 active:scale-[0.99]">
+                                
+                                <div class="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-slate-50 text-slate-400 group-hover:bg-primary group-hover:text-white transition-all duration-500 shadow-inner">
+                                    <i class="fa-solid fa-file-lines text-xl"></i>
                                 </div>
-                                <span class="shrink-0 text-slate-400 transition-all duration-300 group-hover:translate-x-0.5 group-hover:text-indigo-500">
-                                    <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
-                                </span>
+
+                                <div class="flex-1 min-w-0">
+                                    <div class="flex items-center gap-2 mb-1">
+                                        <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-blue-50 text-primary uppercase tracking-wider group-hover:bg-blue-100">Sub Kegiatan</span>
+                                        <span class="text-xs font-mono text-slate-400">{{ $sk->kode_sub }}</span>
+                                    </div>
+                                    <h3 class="font-bold text-slate-800 text-lg leading-tight truncate group-hover:text-primary transition-colors">
+                                        {{ $sk->nama_sub_kegiatan }}
+                                    </h3>
+                                </div>
+
+                                <div class="shrink-0 h-10 w-10 flex items-center justify-center rounded-full bg-slate-50 group-hover:bg-primary group-hover:text-white transition-all">
+                                    <i class="fa-solid fa-chevron-right text-xs group-hover:translate-x-1 transition-transform"></i>
+                                </div>
                             </a>
-                        </li>
+                        </div>
                     @endforeach
-                </ul>
+                </div>
             @endif
         </section>
         @else
-        {{-- Empty state: no year selected --}}
-        <section class="dashboard-enter dashboard-stagger-3 rounded-2xl border border-slate-200/80 bg-white/60 px-8 py-16 text-center backdrop-blur-sm sm:py-20">
-            <div class="mx-auto flex h-20 w-20 items-center justify-center rounded-2xl bg-gradient-to-br from-slate-100 to-slate-200/80 text-slate-400">
-                <svg class="h-10 w-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+            {{-- Empty State: No Year Selected --}}
+            <div class="animate-fade-up rounded-[3rem] border border-white bg-white/40 p-16 text-center backdrop-blur-md shadow-sm" style="animation-delay: 300ms">
+                <div class="relative mx-auto mb-8 w-24 h-24">
+                    <div class="absolute inset-0 bg-blue-100 rounded-full animate-ping opacity-20"></div>
+                    <div class="relative flex h-24 w-24 items-center justify-center rounded-full bg-gradient-to-br from-slate-50 to-slate-200 text-slate-400 shadow-inner">
+                        <i class="fa-solid fa-arrow-up text-3xl animate-bounce"></i>
+                    </div>
+                </div>
+                <h3 class="text-2xl font-bold text-slate-800">Mulai Pengelolaan</h3>
+                <p class="mt-3 text-slate-500 max-w-md mx-auto">Pilih salah satu <b>Tahun Anggaran</b> di atas untuk memunculkan daftar sub kegiatan yang tersedia.</p>
             </div>
-            <p class="mt-6 text-lg font-medium text-slate-700">Pilih tahun di atas</p>
-            <p class="mt-2 text-sm text-slate-500">Pilih salah satu tahun untuk melihat daftar Sub Kegiatan.</p>
-        </section>
         @endif
     </div>
 </div>
+
+<style>
+    @keyframes fadeUp {
+        0% { opacity: 0; transform: translateY(20px); }
+        100% { opacity: 1; transform: translateY(0); }
+    }
+    .animate-fade-up {
+        animation: fadeUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        opacity: 0;
+    }
+    @keyframes waterFillUp {
+        0% { transform: translateY(100%); }
+        100% { transform: translateY(0%); }
+    }
+    .animate-water-fill-up {
+        animation: waterFillUp 7s cubic-bezier(0.2, 0.8, 0.2, 1) forwards !important;
+    }
+    @keyframes waveFlow {
+        0% { transform: translateX(0); }
+        100% { transform: translateX(-50%); }
+    }
+    .animate-wave-flow {
+        animation: waveFlow 5.5s linear infinite;
+    }
+    .animate-wave-flow-slow {
+        animation: waveFlow 8s linear infinite reverse;
+    }
+</style>
 @endsection

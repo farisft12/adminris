@@ -115,7 +115,8 @@
                     @endif
                     <td class="text-cell">
                         <h1>PEMERINTAH KOTA BANJARMASIN</h1>
-                        <h2>BAGIAN PROTOKOL DAN KOMUNIKASI PIMPINAN SEKRETARIAT DAERAH KOTA BANJARMASIN</h2>
+                        <h2>BAGIAN PROTOKOL DAN KOMUNIKASI PIMPINAN</h2>
+                        <h2>SEKRETARIAT DAERAH KOTA BANJARMASIN</h2>
                     </td>
                 </tr>
             </table>

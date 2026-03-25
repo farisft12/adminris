@@ -3,125 +3,193 @@
 @section('title', 'Admin - Sub Kegiatan')
 
 @section('content')
-<div class="mx-auto max-w-5xl px-4 py-6 sm:px-6 lg:px-8">
-    <div class="mb-6 flex items-center justify-between">
-        <div>
-            <a href="{{ route('admin.dashboard') }}" class="text-sm text-slate-600 hover:text-slate-900">&larr; Admin</a>
-            <h1 class="mt-2 text-2xl font-bold text-slate-900">Sub Kegiatan</h1>
-        </div>
-        <a href="{{ route('admin.sub-kegiatans.create') }}" class="rounded-lg bg-slate-800 px-4 py-2 text-sm font-medium text-white hover:bg-slate-700">Tambah Sub Kegiatan</a>
+<div class="relative min-h-screen bg-slate-50 pb-12">
+    {{-- Background subtle (hanya satu warna lembut agar tidak ramai) --}}
+    <div class="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
+        <div class="absolute -left-20 top-20 h-96 w-96 rounded-full bg-slate-200/40 blur-3xl"></div>
     </div>
-    <form method="GET" class="mb-4 flex gap-2">
-        <select name="year_id" class="rounded-lg border border-slate-300 px-3 py-2 text-sm">
-            <option value="">Semua Tahun</option>
-            @foreach($years as $y)
-                <option value="{{ $y->id }}" {{ request('year_id') == $y->id ? 'selected' : '' }}>{{ $y->tahun }}</option>
-            @endforeach
-        </select>
-        <button type="submit" class="rounded-lg bg-slate-100 px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-200">Filter</button>
-    </form>
-    <div class="overflow-hidden rounded-xl border border-slate-200 bg-white">
-        <table class="min-w-full divide-y divide-slate-200">
-            <thead class="bg-slate-50">
-                <tr>
-                    <th class="w-10 px-2 py-3"></th>
-                    <th class="px-4 py-3 text-left text-xs font-medium uppercase text-slate-600">Tahun</th>
-                    <th class="px-4 py-3 text-left text-xs font-medium uppercase text-slate-600">Nama Sub Kegiatan</th>
-                    <th class="px-4 py-3 text-left text-xs font-medium uppercase text-slate-600">Kode</th>
-                    <th class="px-4 py-3 text-right text-xs font-medium uppercase text-slate-600">Anggaran</th>
-                    <th class="px-4 py-3 text-right text-xs font-medium uppercase text-slate-600">Aksi</th>
-                </tr>
-            </thead>
-            <tbody class="divide-y divide-slate-200">
-                @forelse($subKegiatans as $sk)
-                    <tr class="hover:bg-slate-50 align-top">
-                        <td colspan="6" class="p-0">
-                            <div x-data="{ open: false }" class="border-b border-slate-100">
-                                <div class="grid grid-cols-[2.5rem_4rem_1fr_6rem_7rem_8rem] items-center gap-0 border-b border-slate-100 md:grid-cols-[2.5rem_5rem_1fr_7rem_8rem_9rem]">
-                                    <div class="flex justify-center py-3">
-                                        @if($sk->kodeRekenings->isNotEmpty())
-                                            <button type="button" @click="open = !open" class="rounded p-1 text-slate-500 hover:bg-slate-200" :class="{ 'rotate-90': open }" title="Tampilkan kode rekening">
-                                                <svg class="h-5 w-5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
-                                            </button>
-                                        @endif
-                                    </div>
-                                    <div class="px-2 py-3 text-slate-900">{{ $sk->year->tahun ?? '-' }}</div>
-                                    <div class="min-w-0 px-2 py-3 font-medium text-slate-900">{{ $sk->nama_sub_kegiatan }}</div>
-                                    <div class="px-2 py-3 text-slate-600">{{ $sk->kode_sub ?: '-' }}</div>
-                                    <div class="px-2 py-3 text-right tabular-nums text-slate-700">{{ number_format($sk->anggaran ?? 0, 0, ',', '.') }}</div>
-                                    <div class="flex items-center justify-end gap-1 px-2 py-3">
-                                        <a href="{{ route('admin.sub-kegiatans.edit', $sk) }}" class="rounded p-2 text-slate-500 transition hover:bg-slate-100 hover:text-slate-900" title="Edit">
-                                            <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
+
+    <div class="mx-auto max-w-6xl px-4 py-8 sm:px-6 lg:px-8">
+        {{-- Header Section --}}
+        <div class="mb-8 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between animate-fade-up">
+            <div>
+                <nav class="mb-2 flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.15em] text-slate-400">
+                    <a href="{{ route('admin.dashboard') }}" class="hover:text-slate-600 transition-colors">Admin</a>
+                    <i class="fa-solid fa-chevron-right text-[8px]"></i>
+                    <span>Sub Kegiatan</span>
+                </nav>
+                <h1 class="text-3xl font-bold text-slate-900 tracking-tight">Manajemen Sub Kegiatan</h1>
+            </div>
+            
+            <a href="{{ route('admin.sub-kegiatans.create') }}" 
+                class="inline-flex items-center justify-center gap-2 rounded-lg bg-slate-900 px-5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-slate-800 transition-all active:scale-95">
+                <i class="fa-solid fa-plus text-xs"></i>
+                Tambah Sub Kegiatan
+            </a>
+        </div>
+
+        {{-- Filter Section --}}
+        <div class="mb-6 animate-fade-up" style="animation-delay: 100ms">
+            <form method="GET" class="flex items-center gap-3 rounded-xl border border-slate-200 bg-white p-3 shadow-sm">
+                <div class="flex flex-1 items-center gap-3 pl-2">
+                    <i class="fa-solid fa-calendar text-slate-400 text-sm"></i>
+                    <select name="year_id" class="w-full bg-transparent text-sm font-medium text-slate-700 outline-none border-none focus:ring-0 cursor-pointer">
+                        <option value="">Semua Tahun Anggaran</option>
+                        @foreach($years as $y)
+                            <option value="{{ $y->id }}" {{ request('year_id') == $y->id ? 'selected' : '' }}>Tahun {{ $y->tahun }}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="h-6 w-px bg-slate-200"></div>
+                <button type="submit" class="px-4 py-1.5 text-sm font-bold text-slate-700 hover:text-slate-900 transition-colors">
+                    Filter
+                </button>
+            </form>
+        </div>
+
+        {{-- Table Section --}}
+        <div class="animate-fade-up border border-slate-200 bg-white rounded-xl shadow-sm overflow-hidden" style="animation-delay: 200ms">
+            <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-slate-100">
+                    <thead>
+                        <tr class="bg-slate-50/50">
+                            <th class="w-12 px-4 py-4"></th>
+                            <th class="px-4 py-4 text-left text-[10px] font-bold uppercase tracking-widest text-slate-400">Tahun</th>
+                            <th class="px-4 py-4 text-left text-[10px] font-bold uppercase tracking-widest text-slate-400">Sub Kegiatan</th>
+                            <th class="px-4 py-4 text-left text-[10px] font-bold uppercase tracking-widest text-slate-400">Kode</th>
+                            <th class="px-4 py-4 text-right text-[10px] font-bold uppercase tracking-widest text-slate-400">Pagu Anggaran</th>
+                            <th class="px-6 py-4 text-right text-[10px] font-bold uppercase tracking-widest text-slate-400">Opsi</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-50">
+                        @forelse($subKegiatans as $sk)
+                            <tr x-data="{ open: false }" class="hover:bg-slate-50/50 transition-colors">
+                                <td class="px-4 py-4 text-center">
+                                    @if($sk->kodeRekenings->isNotEmpty())
+                                        <button @click="open = !open" class="flex h-7 w-7 items-center justify-center rounded border border-slate-200 bg-white text-slate-400 hover:text-slate-900 transition-all" :class="{ 'rotate-90 border-slate-900 text-slate-900': open }">
+                                            <i class="fa-solid fa-chevron-right text-[10px]"></i>
+                                        </button>
+                                    @endif
+                                </td>
+                                <td class="whitespace-nowrap px-4 py-4">
+                                    <span class="text-sm font-semibold text-slate-600">{{ $sk->year->tahun ?? '-' }}</span>
+                                </td>
+                                <td class="px-4 py-4">
+                                    <div class="text-sm font-bold text-slate-900 leading-snug">{{ $sk->nama_sub_kegiatan }}</div>
+                                </td>
+                                <td class="whitespace-nowrap px-4 py-4">
+                                    <span class="text-xs font-mono font-medium text-slate-400">{{ $sk->kode_sub ?: '-' }}</span>
+                                </td>
+                                <td class="whitespace-nowrap px-4 py-4 text-right">
+                                    <span class="text-sm font-bold text-slate-900 tabular-nums">
+                                        {{ number_format($sk->anggaran ?? 0, 0, ',', '.') }}
+                                    </span>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center justify-end gap-3">
+                                        <a href="{{ route('admin.sub-kegiatans.edit', $sk) }}" class="text-slate-400 hover:text-slate-900 transition-colors" title="Edit">
+                                            <i class="fa-solid fa-pen-to-square"></i>
                                         </a>
-                                        <form action="{{ route('admin.sub-kegiatans.destroy', $sk) }}" method="POST" class="inline" onsubmit="return confirm('Hapus sub kegiatan ini?');">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit" class="rounded p-2 text-slate-500 transition hover:bg-red-50 hover:text-red-600" title="Hapus">
-                                                <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                                        <form action="{{ route('admin.sub-kegiatans.destroy', $sk) }}" method="POST" class="inline" onsubmit="return confirm('Hapus data ini?');">
+                                            @csrf @method('DELETE')
+                                            <button type="submit" class="text-slate-400 hover:text-red-600 transition-colors">
+                                                <i class="fa-solid fa-trash-can"></i>
                                             </button>
                                         </form>
                                     </div>
-                                </div>
-                                @if($sk->kodeRekenings->isNotEmpty())
-                                    <div x-show="open" x-transition class="border-t border-slate-100 bg-slate-50/80 px-4 py-4" style="display: none;">
-                                        <div class="rounded-lg border border-slate-200 bg-white p-4">
-                                            <h4 class="mb-3 text-sm font-semibold text-slate-700">Kode Rekening & Anggaran</h4>
-                                            <form method="POST" action="{{ route('admin.sub-kegiatans.anggaran-kode-rekening.update', $sk) }}" class="space-y-3">
-                                                @csrf
-                                                @method('PUT')
-                                                @if(request('year_id'))<input type="hidden" name="year_id" value="{{ request('year_id') }}" />@endif
-                                                <div class="overflow-x-auto">
-                                                    <table class="min-w-full text-sm">
-                                                        <thead>
-                                                            <tr class="border-b border-slate-200">
-                                                                <th class="py-2 text-left font-medium text-slate-600">Kode Rekening</th>
-                                                                <th class="py-2 text-left font-medium text-slate-600">Nama Rekening</th>
-                                                                <th class="py-2 text-right font-medium text-slate-600">Anggaran (Rp)</th>
-                                                            </tr>
-                                                        </thead>
-                                                        <tbody>
+                                </td>
+
+                                {{-- Collapsible Detail --}}
+                                <template x-if="open">
+                                    <tr>
+                                        <td colspan="6" class="bg-slate-50/30 px-6 py-4">
+                                            <div class="rounded-lg border border-slate-200 bg-white shadow-sm overflow-hidden">
+                                                <div class="border-b border-slate-100 bg-slate-50/50 px-5 py-3 flex justify-between items-center">
+                                                    <h4 class="text-[11px] font-black text-slate-800 uppercase tracking-wider">Distribusi Anggaran Rekening</h4>
+                                                    <i class="fa-solid fa-calculator text-slate-300"></i>
+                                                </div>
+
+                                                <form method="POST" action="{{ route('admin.sub-kegiatans.anggaran-kode-rekening.update', $sk) }}" class="p-5">
+                                                    @csrf @method('PUT')
+                                                    @if(request('year_id'))<input type="hidden" name="year_id" value="{{ request('year_id') }}" />@endif
+
+                                                    <table class="min-w-full text-sm mb-6">
+                                                        <tbody class="divide-y divide-slate-100">
                                                             @foreach($sk->kodeRekenings as $kr)
-                                                                <tr class="border-b border-slate-100">
-                                                                    <td class="py-2 text-slate-800">{{ $kr->kode_rekening }}</td>
-                                                                    <td class="py-2 text-slate-700">{{ $kr->nama_rekening }}</td>
-                                                                    <td class="py-2 text-right">
-                                                                        <input type="number" name="anggaran[{{ $kr->id }}]" value="{{ old('anggaran.'.$kr->id, $kr->pivot->anggaran ?? 0) }}" min="0" step="0.01" class="w-36 rounded border border-slate-300 px-2 py-1.5 text-right tabular-nums" />
+                                                                <tr>
+                                                                    <td class="py-3 pr-4">
+                                                                        <div class="text-[10px] font-mono text-slate-400 uppercase tracking-tighter">{{ $kr->kode_rekening }}</div>
+                                                                        <div class="font-semibold text-slate-700">{{ $kr->nama_rekening }}</div>
+                                                                    </td>
+                                                                    <td class="py-3 text-right">
+                                                                        <input type="number" name="anggaran[{{ $kr->id }}]" value="{{ old('anggaran.'.$kr->id, $kr->pivot->anggaran ?? 0) }}" 
+                                                                            class="w-full max-w-[180px] rounded-md border-slate-200 bg-slate-50 px-3 py-1.5 text-right font-bold text-slate-800 focus:bg-white focus:ring-1 focus:ring-slate-900 outline-none transition-all" />
                                                                     </td>
                                                                 </tr>
                                                             @endforeach
                                                         </tbody>
                                                     </table>
-                                                </div>
-                                                @php
-                                                    $totalKodeRek = $sk->kodeRekenings->sum(fn($kr) => (float)($kr->pivot->anggaran ?? 0));
-                                                    $anggaranSk = (float)($sk->anggaran ?? 0);
-                                                    $selisih = $anggaranSk - $totalKodeRek;
-                                                @endphp
-                                                <div class="flex flex-wrap items-center gap-4 border-t border-slate-200 pt-3">
-                                                    <span class="text-slate-600">Anggaran Sub Kegiatan: <strong class="tabular-nums">{{ number_format($anggaranSk, 0, ',', '.') }}</strong></span>
-                                                    <span class="text-slate-600">Total Kode Rekening: <strong class="tabular-nums">{{ number_format($totalKodeRek, 0, ',', '.') }}</strong></span>
-                                                    @if($selisih != 0)
-                                                        <span class="rounded-md bg-amber-100 px-2 py-1 text-sm font-medium text-amber-800">Selisih:  {{ $selisih > 0 ? '+' : '' }}{{ number_format($selisih, 0, ',', '.') }}</span>
-                                                    @else
-                                                        <span class="rounded-md bg-emerald-100 px-2 py-1 text-sm font-medium text-emerald-800">Selisih: 0 (sesuai)</span>
-                                                    @endif
-                                                    <button type="submit" class="ml-auto rounded-lg bg-slate-700 px-3 py-1.5 text-sm font-medium text-white hover:bg-slate-600">Simpan Anggaran</button>
-                                                </div>
-                                            </form>
-                                        </div>
-                                    </div>
-                                @endif
-                            </div>
-                        </td>
-                    </tr>
-                @empty
-                    <tr><td colspan="6" class="px-4 py-8 text-center text-slate-500">Belum ada sub kegiatan.</td></tr>
-                @endforelse
-            </tbody>
-        </table>
+
+                                                    @php
+                                                        $totalKodeRek = $sk->kodeRekenings->sum(fn($kr) => (float)($kr->pivot->anggaran ?? 0));
+                                                        $anggaranSk = (float)($sk->anggaran ?? 0);
+                                                        $selisih = $anggaranSk - $totalKodeRek;
+                                                    @endphp
+
+                                                    <div class="flex flex-wrap items-center justify-between gap-4 border-t border-slate-100 pt-5">
+                                                        <div class="flex gap-8">
+                                                            <div>
+                                                                <div class="text-[9px] font-bold text-slate-400 uppercase">Pagu</div>
+                                                                <div class="text-sm font-bold text-slate-900">{{ number_format($anggaranSk, 0, ',', '.') }}</div>
+                                                            </div>
+                                                            <div>
+                                                                <div class="text-[9px] font-bold text-slate-400 uppercase">Terpakai</div>
+                                                                <div class="text-sm font-bold text-slate-900">{{ number_format($totalKodeRek, 0, ',', '.') }}</div>
+                                                            </div>
+                                                            <div>
+                                                                <div class="text-[9px] font-bold text-slate-400 uppercase">Selisih</div>
+                                                                <div class="text-sm font-bold {{ $selisih != 0 ? 'text-amber-600' : 'text-emerald-600' }}">
+                                                                    {{ number_format($selisih, 0, ',', '.') }}
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <button type="submit" class="rounded-md bg-slate-900 px-4 py-2 text-xs font-bold text-white hover:bg-slate-800 transition-all">
+                                                            Simpan Perubahan
+                                                        </button>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </template>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="6" class="px-4 py-20 text-center text-slate-400">
+                                    <p class="text-sm">Data tidak ditemukan.</p>
+                                </td>
+                            </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
         @if($subKegiatans->hasPages())
-            <div class="border-t border-slate-200 px-4 py-3">{{ $subKegiatans->withQueryString()->links() }}</div>
+            <div class="mt-6">
+                {{ $subKegiatans->withQueryString()->links() }}
+            </div>
         @endif
     </div>
 </div>
+
+<style>
+    @keyframes fadeUp {
+        0% { opacity: 0; transform: translateY(10px); }
+        100% { opacity: 1; transform: translateY(0); }
+    }
+    .animate-fade-up {
+        animation: fadeUp 0.5s ease-out forwards;
+    }
+</style>
 @endsection

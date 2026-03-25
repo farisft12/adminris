@@ -1,61 +1,92 @@
 @extends('layouts.guest')
 
-@section('title', 'Login')
+@section('title', 'Masuk')
+
+@push('styles')
+<style>
+    .glass-card {
+        background: rgba(255, 255, 255, 0.85);
+        backdrop-filter: blur(12px);
+        border: 1px solid rgba(255, 255, 255, 0.4);
+    }
+    @keyframes slideUp { 0% { opacity: 0; transform: translateY(20px); } 100% { opacity: 1; transform: translateY(0); } }
+    .animate-slide-up { animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+</style>
+@endpush
 
 @section('content')
-<div class="guest-page min-h-screen">
-    <div class="absolute inset-0 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900"></div>
-    <div class="absolute inset-0 opacity-20" style="background-image: url('data:image/svg+xml,%3Csvg width=\'60\' height=\'60\' viewBox=\'0 0 60 60\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'none\' fill-rule=\'evenodd\'%3E%3Cg fill=\'%23ffffff\' fill-opacity=\'0.06\'%3E%3Cpath d=\'M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z\'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E');"></div>
-
-    <div class="relative flex min-h-screen items-center justify-center px-4 py-12">
-        <div class="w-full max-w-md">
-            <a href="{{ url('/') }}" class="mb-8 inline-flex items-center gap-2 text-sm text-slate-400 transition-colors hover:text-white">
-                <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
-                Kembali
-            </a>
-            <div class="animate-scale-in rounded-2xl border border-white/10 bg-white/5 p-8 shadow-2xl backdrop-blur-xl opacity-0-init" style="animation-fill-mode: forwards;">
-                <div class="mb-8">
-                    <h2 class="text-2xl font-bold tracking-tight text-white">Masuk ke akun</h2>
-                    <p class="mt-1 text-slate-400">Gunakan email dan password Anda.</p>
+    <div class="absolute top-0 left-0 w-96 h-96 bg-blue-100 rounded-full blur-3xl opacity-60 -translate-x-1/2 -translate-y-1/2"></div>
+    
+    <div class="w-full max-w-[420px] z-10 animate-slide-up">
+        <div class="text-center mb-8">
+            <a href="{{ url('/') }}" class="inline-flex items-center gap-2 mb-2 transition-transform hover:scale-105">
+                <div class="bg-primary text-white p-2 rounded-lg shadow-lg">
+                    <i class="fa-solid fa-file-invoice-dollar text-xl"></i>
                 </div>
-                <form method="POST" action="{{ route('login') }}" class="space-y-5">
-                    @csrf
-                    <div class="animate-fade-in-up opacity-0-init" style="animation-delay: 0.1s; animation-fill-mode: forwards;">
-                        <label for="email" class="mb-1.5 block text-sm font-medium text-slate-300">Email</label>
-                        <input id="email" type="email" name="email" value="{{ old('email') }}" required autofocus autocomplete="username"
-                            class="input-guest w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-white placeholder-slate-500 shadow-inner transition-all duration-200 focus:border-indigo-400 focus:ring-2 focus:ring-indigo-400/30 @error('email') border-red-400/50 focus:border-red-400 focus:ring-red-400/30 @enderror"
-                            placeholder="nama@email.com" />
-                        @error('email')
-                            <p class="mt-1.5 text-sm text-red-400">{{ $message }}</p>
-                        @enderror
+                <span class="font-bold text-2xl tracking-tight text-primary">Admin<span class="text-secondary">ris</span></span>
+            </a>
+        </div>
+
+        <div class="glass-card rounded-[2.5rem] shadow-2xl shadow-blue-900/5 p-10 relative">
+            <h2 class="text-2xl font-bold text-gray-800 mb-6 text-center">Selamat Datang</h2>
+
+            @if (session('status'))
+                <div class="mb-6 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm font-medium text-emerald-800">
+                    <i class="fa-solid fa-circle-check mr-2"></i> {{ session('status') }}
+                </div>
+            @endif
+            
+            <form method="POST" action="{{ route('login') }}" class="space-y-5">
+                @csrf
+                <div class="space-y-1">
+                    <label class="text-xs font-bold text-gray-400 uppercase ml-1">Email / Username</label>
+                    <input type="email" name="email" value="{{ old('email') }}" required autofocus placeholder="admin@email.com" 
+                        class="w-full px-5 py-3.5 bg-white/50 border border-gray-100 rounded-2xl focus:ring-4 focus:ring-blue-50 focus:border-primary outline-none transition-all duration-300 @error('email') border-red-400 @enderror">
+                    @error('email')
+                        <p class="mt-1 text-sm text-red-500 ml-1">{{ $message }}</p>
+                    @enderror
+                </div>
+
+                <div class="space-y-1">
+                    <div class="flex justify-between items-center ml-1">
+                        <label class="text-xs font-bold text-gray-400 uppercase">Kata Sandi</label>
+                        <a href="{{ route('password.request') }}" class="text-xs font-bold text-primary hover:underline">Lupa Password?</a>
                     </div>
-                    <div class="animate-fade-in-up opacity-0-init" style="animation-delay: 0.15s; animation-fill-mode: forwards;">
-                        <label for="password" class="mb-1.5 block text-sm font-medium text-slate-300">Password</label>
-                        <input id="password" type="password" name="password" required autocomplete="current-password"
-                            class="input-guest w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-white placeholder-slate-500 shadow-inner transition-all duration-200 focus:border-indigo-400 focus:ring-2 focus:ring-indigo-400/30 @error('password') border-red-400/50 focus:border-red-400 focus:ring-red-400/30 @enderror"
-                            placeholder="••••••••" />
-                        @error('password')
-                            <p class="mt-1.5 text-sm text-red-400">{{ $message }}</p>
-                        @enderror
-                    </div>
-                    <div class="animate-fade-in-up opacity-0-init flex items-center" style="animation-delay: 0.2s; animation-fill-mode: forwards;">
-                        <input id="remember" type="checkbox" name="remember"
-                            class="h-4 w-4 rounded border-white/20 bg-white/5 text-indigo-500 focus:ring-indigo-400/50" />
-                        <label for="remember" class="ml-2.5 text-sm text-slate-400">Ingat saya</label>
-                    </div>
-                    <div class="animate-fade-in-up opacity-0-init pt-1" style="animation-delay: 0.25s; animation-fill-mode: forwards;">
-                        <button type="submit" class="btn-guest-primary group flex w-full items-center justify-center gap-2 rounded-xl px-4 py-3.5 text-sm font-semibold text-white shadow-lg transition-all duration-300">
-                            Masuk
-                            <span class="inline-block transition-transform duration-300 group-hover:translate-x-0.5">→</span>
-                        </button>
-                    </div>
-                </form>
-                <p class="mt-6 animate-fade-in-up text-center text-sm text-slate-400 opacity-0-init" style="animation-delay: 0.3s; animation-fill-mode: forwards;">
-                    Belum punya akun?
-                    <a href="{{ route('register') }}" class="font-medium text-indigo-400 transition-colors hover:text-indigo-300">Daftar</a>
+                    <input type="password" name="password" required placeholder="••••••••" 
+                        class="w-full px-5 py-3.5 bg-white/50 border border-gray-100 rounded-2xl focus:ring-4 focus:ring-blue-50 focus:border-primary outline-none transition-all duration-300 @error('password') border-red-400 @enderror">
+                    @error('password')
+                        <p class="mt-1 text-sm text-red-500 ml-1">{{ $message }}</p>
+                    @enderror
+                </div>
+
+                <div class="flex items-center ml-1 mt-2">
+                    <input id="remember" type="checkbox" name="remember" class="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary" />
+                    <label for="remember" class="ml-2 text-sm text-gray-500">Ingat saya</label>
+                </div>
+
+                <button type="submit" class="w-full bg-primary hover:bg-blue-900 text-white font-bold py-4 rounded-2xl shadow-lg shadow-blue-200 transition-all transform hover:scale-[1.02] active:scale-95 mt-4">
+                    Masuk Sekarang
+                </button>
+            </form>
+
+            <div class="mt-6 flex items-center justify-between">
+                <span class="w-1/5 border-b border-gray-200"></span>
+                <span class="text-xs text-center text-gray-500 uppercase font-bold tracking-wider">Atau masuk dengan</span>
+                <span class="w-1/5 border-b border-gray-200"></span>
+            </div>
+
+            <div class="mt-6">
+                <a href="{{ route('google.login') }}" class="w-full flex items-center justify-center gap-3 bg-white border border-gray-200 hover:bg-gray-50 text-gray-700 font-bold py-3.5 rounded-2xl shadow-sm transition-all transform hover:scale-[1.02] active:scale-95">
+                    <img src="https://www.svgrepo.com/show/475656/google-color.svg" alt="Google" class="w-5 h-5">
+                    Lanjutkan dengan Google
+                </a>
+            </div>
+
+            <div class="mt-8 pt-6 border-t border-gray-50 text-center">
+                <p class="text-sm text-gray-500">
+                    Belum punya akun? <a href="{{ route('register') }}" class="text-primary font-bold hover:underline">Daftar Sekarang</a>
                 </p>
             </div>
         </div>
     </div>
-</div>
 @endsection

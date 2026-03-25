@@ -17,6 +17,14 @@ class TerbilangService
         if ($n < 0) {
             return 'minus ' . self::numberToWords(-$n);
         }
+        return self::convert($n);
+    }
+
+    private static function convert(int $n): string
+    {
+        if ($n === 0) {
+            return '';
+        }
         if ($n < 10) {
             return self::$satuan[$n];
         }
@@ -26,33 +34,33 @@ class TerbilangService
         if ($n < 100) {
             $puluh = (int) floor($n / 10);
             $sisa = $n % 10;
-            return trim(self::$puluhan[$puluh] . ' ' . self::numberToWords($sisa));
+            return trim(self::$puluhan[$puluh] . ' ' . self::convert($sisa));
         }
         if ($n < 200) {
-            return 'seratus ' . self::numberToWords($n - 100);
+            return trim('seratus ' . self::convert($n - 100));
         }
         if ($n < 1000) {
             $ratus = (int) floor($n / 100);
             $sisa = $n % 100;
-            return trim(self::numberToWords($ratus) . ' ratus ' . self::numberToWords($sisa));
+            return trim(self::convert($ratus) . ' ratus ' . self::convert($sisa));
         }
         if ($n < 2000) {
-            return 'seribu ' . self::numberToWords($n - 1000);
+            return trim('seribu ' . self::convert($n - 1000));
         }
         if ($n < 1000000) {
             $ribu = (int) floor($n / 1000);
             $sisa = $n % 1000;
-            return trim(self::numberToWords($ribu) . ' ribu ' . self::numberToWords($sisa));
+            return trim(self::convert($ribu) . ' ribu ' . self::convert($sisa));
         }
         if ($n < 1000000000) {
             $juta = (int) floor($n / 1000000);
             $sisa = $n % 1000000;
-            return trim(self::numberToWords($juta) . ' juta ' . self::numberToWords($sisa));
+            return trim(self::convert($juta) . ' juta ' . self::convert($sisa));
         }
         if ($n < 1000000000000) {
             $miliar = (int) floor($n / 1000000000);
             $sisa = $n % 1000000000;
-            return trim(self::numberToWords($miliar) . ' miliar ' . self::numberToWords($sisa));
+            return trim(self::convert($miliar) . ' miliar ' . self::convert($sisa));
         }
         return (string) $n;
     }
