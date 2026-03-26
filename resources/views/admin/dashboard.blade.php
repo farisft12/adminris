@@ -32,6 +32,27 @@
             @php
                 $adminMenus = [
                     [
+                        'route' => 'admin.users.index',
+                        'title' => 'Manajemen User',
+                        'desc' => 'Daftar dan pantau seluruh pengguna terdaftar di sistem.',
+                        'icon' => 'fa-user-shield',
+                        'color' => 'indigo'
+                    ],
+                    [
+                        'route' => 'admin.data-overview',
+                        'title' => 'Data & Statistik',
+                        'desc' => 'Ringkasan data, grafik anggaran, dan statistik administrasi.',
+                        'icon' => 'fa-chart-line',
+                        'color' => 'blue'
+                    ],
+                    [
+                        'route' => 'admin.pejabat.index',
+                        'title' => 'Bendahara & Kabag',
+                        'desc' => 'Atur nama pejabat yang muncul di Kwitansi & Nota Persetujuan.',
+                        'icon' => 'fa-signature',
+                        'color' => 'emerald'
+                    ],
+                    [
                         'route' => 'admin.years.index', 
                         'title' => 'Tahun Anggaran', 
                         'desc' => 'Tambah & kelola periode tahun (2026, 2027, ...).', 

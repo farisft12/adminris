@@ -9,6 +9,12 @@ class AdminDashboardController extends Controller
 {
     public function __invoke(): View
     {
-        return view('admin.dashboard');
+        $stats = [
+            'users_total' => \App\Models\User::count(),
+            'sub_kegiatan_total' => \App\Models\SubKegiatan::count(),
+            // You could add more financial stats here if needed, but these fulfill the "User Card" and "Data Card" requirement
+        ];
+
+        return view('admin.dashboard', compact('stats'));
     }
 }

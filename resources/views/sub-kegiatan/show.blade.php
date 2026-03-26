@@ -11,7 +11,7 @@
     </div>
 
     <div class="mx-auto max-w-5xl px-4 py-8 sm:px-6 lg:px-8 lg:py-10">
-        {{-- Breadcrumb minimalis --}}
+        {{-- Breadcrumb --}}
         <nav class="mb-6 flex flex-wrap items-center gap-2 text-sm text-slate-500 animate-fade-up">
             <a href="{{ route('dashboard') }}" class="hover:text-primary transition-colors">Dashboard</a>
             <span class="opacity-50">/</span>
@@ -63,7 +63,7 @@
                 </div>
                 
                 <span class="shrink-0 text-slate-300 transition-all duration-300 group-hover:translate-x-1 group-hover:text-indigo-600">
-                    <i class="fa-solid fa-chevron-right"></i>
+                    <i class="fa-solid fa-chevron-right text-[10px] sm:text-base"></i>
                 </span>
             </a>
         </div>

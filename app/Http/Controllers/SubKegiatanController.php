@@ -14,18 +14,12 @@ class SubKegiatanController extends Controller
 {
     public function show(Request $request, SubKegiatan $subKegiatan): View
     {
-        if ($request->user()->isAdmin()) {
-            abort(404);
-        }
         $subKegiatan->load('year');
         return view('sub-kegiatan.show', compact('subKegiatan'));
     }
 
     public function npd(Request $request, SubKegiatan $subKegiatan): View
     {
-        if ($request->user()->isAdmin()) {
-            abort(404);
-        }
         $subKegiatan->load(['year', 'kodeRekenings']);
         $kodeRekenings = $subKegiatan->kodeRekenings()->orderBy('kode_rekening')->get();
 
@@ -74,9 +68,6 @@ class SubKegiatanController extends Controller
 
     public function storeNpd(Request $request, SubKegiatan $subKegiatan): RedirectResponse
     {
-        if ($request->user()->isAdmin()) {
-            abort(404);
-        }
 
         $kodeRekenings = $subKegiatan->kodeRekenings()->pluck('id')->all();
         $rules = [
@@ -141,9 +132,6 @@ class SubKegiatanController extends Controller
 
     public function showNpd(Request $request, SubKegiatan $subKegiatan, Npd $npd): View
     {
-        if ($request->user()->isAdmin()) {
-            abort(404);
-        }
         if ($npd->sub_kegiatan_id !== $subKegiatan->id) {
             abort(404);
         }
@@ -180,9 +168,6 @@ class SubKegiatanController extends Controller
 
     public function printNpd(Request $request, SubKegiatan $subKegiatan, Npd $npd): View
     {
-        if ($request->user()->isAdmin()) {
-            abort(404);
-        }
         if ($npd->sub_kegiatan_id !== $subKegiatan->id) {
             abort(404);
         }
@@ -219,9 +204,6 @@ class SubKegiatanController extends Controller
 
     public function editNpd(Request $request, SubKegiatan $subKegiatan, Npd $npd): View
     {
-        if ($request->user()->isAdmin()) {
-            abort(404);
-        }
         if ($npd->sub_kegiatan_id !== $subKegiatan->id) {
             abort(404);
         }
@@ -275,9 +257,6 @@ class SubKegiatanController extends Controller
 
     public function updateNpd(Request $request, SubKegiatan $subKegiatan, Npd $npd): RedirectResponse
     {
-        if ($request->user()->isAdmin()) {
-            abort(404);
-        }
         if ($npd->sub_kegiatan_id !== $subKegiatan->id) {
             abort(404);
         }

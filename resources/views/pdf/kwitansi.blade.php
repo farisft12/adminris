@@ -196,8 +196,8 @@
                 <td style="width: 25%; vertical-align: top; text-align: center; font-size: 8pt;">
                     Mengetahui/Menyetujui,<br>Kuasa Pengguna Anggaran
                     <br><br><br><br>
-                    <span class="fw-bold underline" style="white-space: nowrap;">Noorfahmi Arif Ridha, S.STP, MM</span><br>
-                    <span style="font-size: 7pt;">NIP. 19871115 200602 1 001</span>
+                    <span class="fw-bold underline" style="white-space: nowrap;">{{ \App\Models\Setting::get('kabag_nama', 'Noorfahmi Arif Ridha, S.STP, MM') }}</span><br>
+                    <span style="font-size: 7pt;">NIP. {{ \App\Models\Setting::get('kabag_nip', '19871115 200602 1 001') }}</span>
                 </td>
                 <td style="width: 25%; vertical-align: top; text-align: center; font-size: 8pt;">
                     Pejabat Pelaksana<br>Teknis Kegiatan
@@ -208,8 +208,8 @@
                 <td style="width: 25%; vertical-align: top; text-align: center; font-size: 8pt;">
                     Lunas dibayar,<br>Bendahara Pengeluaran Pembantu
                     <br><br><br><br>
-                    <span class="fw-bold underline">Ahmad Sofa Anwari, S.Ak</span><br>
-                    <span style="font-size: 7pt;">NIP. 19870129 201001 1 002</span>
+                    <span class="fw-bold underline">{{ \App\Models\Setting::get('bendahara_nama', 'Ahmad Sofa Anwari, S.Ak') }}</span><br>
+                    <span style="font-size: 7pt;">NIP. {{ \App\Models\Setting::get('bendahara_nip', '19870129 201001 1 002') }}</span>
                 </td>
                 <td style="width: 25%; vertical-align: top; text-align: center; font-size: 8pt;">
                     Yang menerima,
