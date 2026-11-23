@@ -35,6 +35,12 @@
                     <i class="fa-solid fa-circle-check mr-2"></i> {{ session('status') }}
                 </div>
             @endif
+
+            @if (session('error'))
+                <div class="mb-6 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-medium text-red-800">
+                    <i class="fa-solid fa-circle-exclamation mr-2"></i> {{ session('error') }}
+                </div>
+            @endif
             
             <form method="POST" action="{{ route('login') }}" class="space-y-5">
                 @csrf
@@ -84,7 +90,7 @@
 
             <div class="mt-8 pt-6 border-t border-gray-50 text-center">
                 <p class="text-sm text-gray-500">
-                    Belum punya akun? <a href="{{ route('register') }}" class="text-primary font-bold hover:underline">Daftar Sekarang</a>
+                    Belum punya akun? Masuk dengan Google, lalu tunggu persetujuan admin.
                 </p>
             </div>
         </div>

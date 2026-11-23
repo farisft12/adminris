@@ -20,7 +20,7 @@ class SubKegiatanKodeRekeningController extends Controller
         $subKegiatanId = $subKegiatan->id;
         $totalInputPerKode = Administrasi::query()
             ->where('sub_kegiatan_id', $subKegiatanId)
-            ->selectRaw('kode_rekening_id, SUM(tagihan + COALESCE(ppn, 0) + COALESCE(pph23, 0) + COALESCE(pph21, 0)) as total_input')
+            ->selectRaw('kode_rekening_id, SUM(tagihan) as total_input')
             ->groupBy('kode_rekening_id')
             ->pluck('total_input', 'kode_rekening_id');
 

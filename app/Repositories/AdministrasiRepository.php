@@ -70,7 +70,6 @@ class AdministrasiRepository
             }
         }
         $sums = $this->getRekapTotal($baseQuery);
-        $sums['total'] = $sums['tagihan'] + $sums['ppn'] + $sums['pph23'] + $sums['pph21'];
         $sums['total_bersih'] = $sums['tagihan'] - $sums['ppn'] - $sums['pph23'] - $sums['pph21'];
         return $sums;
     }

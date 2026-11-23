@@ -53,7 +53,14 @@
                         'color' => 'emerald'
                     ],
                     [
-                        'route' => 'admin.years.index', 
+                        'route' => 'admin.npd-settings.index',
+                        'title' => 'Pengaturan NPD',
+                        'desc' => 'Nama kegiatan, Nomor DPA, teks SPTJB & Nota Dinas per tahun.',
+                        'icon' => 'fa-file-invoice-dollar',
+                        'color' => 'blue'
+                    ],
+                    [
+                        'route' => 'admin.years.index',
                         'title' => 'Tahun Anggaran', 
                         'desc' => 'Tambah & kelola periode tahun (2026, 2027, ...).', 
                         'icon' => 'fa-calendar-check',

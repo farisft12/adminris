@@ -1,14 +1,15 @@
 @php
     /** @var \App\Models\Administrasi $administrasi */
-    $administrasi->load(['subKegiatan.year', 'kodeRekening']);
-    $totalBayar = (float) $administrasi->total;
-    $terbilangText = ucwords(strtolower(trim(\App\Services\TerbilangService::numberToWords($totalBayar)))).' Rupiah';
+    $administrasi->load(['subKegiatan.year', 'subKegiatan.pptk', 'kodeRekening']);
     $tahun = $administrasi->subKegiatan && $administrasi->subKegiatan->year
         ? $administrasi->subKegiatan->year->tahun
         : date('Y');
     $kodeRekening = $administrasi->kodeRekening
         ? $administrasi->kodeRekening->kode_rekening
         : '5.1.02.04.01.0001';
+    $namaKodeRekening = $administrasi->kodeRekening
+        ? $administrasi->kodeRekening->nama_rekening
+        : 'Belanja Perjalanan Dinas Biasa';
     $namaKegiatan = $administrasi->subKegiatan
         ? $administrasi->subKegiatan->nama_sub_kegiatan
         : 'Belanja Perjalanan Dinas Biasa';
@@ -16,8 +17,18 @@
         ? ($administrasi->subKegiatan->kode_sub ?? '').'-'.$administrasi->no.'/'.($administrasi->subKegiatan->year->tahun ?? $tahun)
         : $administrasi->no;
     $ppn = (float) ($administrasi->ppn ?? 0);
-    $pph = (float) ($administrasi->pph23 ?? 0) + (float) ($administrasi->pph21 ?? 0);
+    $pph23 = (float) ($administrasi->pph23 ?? 0);
+    $pph21 = (float) ($administrasi->pph21 ?? 0);
+    $tagihan = (float) ($administrasi->tagihan ?? 0);
+    $sisa = $tagihan - $ppn;
+    $jumlahDibayar = $sisa - $pph21 - $pph23;
+    $terbilangText = ucwords(strtolower(trim(\App\Services\TerbilangService::numberToWords($tagihan)))).' Rupiah';
     $penerimaNama = $administrasi->penerima ? trim($administrasi->penerima) : '';
+    $pptk = $administrasi->subKegiatan && $administrasi->subKegiatan->pptk
+        ? $administrasi->subKegiatan->pptk
+        : null;
+    $namaPptk = $pptk ? $pptk->nama_pptk : 'Ahmad Hamidi, S.Kom';
+    $nipPptk = $pptk ? $pptk->nip : '19871021 201001 1 002';
 @endphp
 <!DOCTYPE html>
 <html lang="id">
@@ -39,7 +50,7 @@
             font-size: 9pt;
             line-height: 1.25;
         }
-        body { background: #f0f0f0; }
+        body { background: #fff; }
         .container {
             border: 2px solid #000;
             width: 100%;
@@ -60,7 +71,8 @@
         @media print {
             html, body { background: none; margin: 0; padding: 0; }
             .container { max-width: none; width: 100%; box-shadow: none; }
-            .no-print { display: none !important; }
+            .no-print, .no-print * { display: none !important; visibility: hidden !important; }
+            div.no-print { display: none !important; position: absolute !important; left: -9999px !important; }
         }
     </style>
 </head>
@@ -74,6 +86,11 @@
                             <td style="width: 35%;">Nama Kegiatan</td>
                             <td style="width: 5%;">:</td>
                             <td style="width: 60%;">{{ $namaKegiatan }}</td>
+                        </tr>
+                        <tr>
+                            <td style="width: 35%;">Nama Kode Rekening</td>
+                            <td style="width: 5%;">:</td>
+                            <td style="width: 60%;">{{ $namaKodeRekening }}</td>
                         </tr>
                         <tr>
                             <td>Kode Rekening</td>
@@ -152,25 +169,25 @@
                             <td class="fw-bold">SISA</td>
                             <td>:</td>
                             <td>Rp</td>
-                            <td class="text-right">-</td>
+                            <td class="text-right">{{ number_format($sisa, 0, ',', '.') }}</td>
                         </tr>
                         <tr>
                             <td class="fw-bold">PPh 22</td>
                             <td>:</td>
                             <td>Rp</td>
-                            <td class="text-right">{{ number_format($pph, 0, ',', '.') }}</td>
+                            <td class="text-right">{{ number_format($pph21, 0, ',', '.') }}</td>
                         </tr>
                         <tr>
                             <td class="fw-bold">PPh 23</td>
                             <td>:</td>
-                            <td>Rp</td>
-                            <td class="text-right">{{ number_format($pph, 0, ',', '.') }}</td>
+                            <td style="border-bottom: 1px solid #000;">Rp</td>
+                            <td style="text-align: right; border-bottom: 1px solid #000;">{{ number_format($pph23, 0, ',', '.') }}</td>
                         </tr>
                         <tr>
                             <td class="fw-bold">JUMLAH YANG DIBAYAR</td>
                             <td>:</td>
                             <td colspan="2" class="text-right border-bottom-double" style="padding-bottom: 2px;">
-                                <span class="fw-bold">Rp &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ number_format($totalBayar, 0, ',', '.') }}</span>
+                                <span class="fw-bold">Rp &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ number_format($jumlahDibayar, 0, ',', '.') }}</span>
                             </td>
                         </tr>
                     </table>
@@ -202,8 +219,8 @@
                 <td style="width: 25%; vertical-align: top; text-align: center; font-size: 8pt;">
                     Pejabat Pelaksana<br>Teknis Kegiatan
                     <br><br><br><br>
-                    <span class="fw-bold underline">Ahmad Hamidi, S.Kom</span><br>
-                    <span style="font-size: 7pt;">NIP. 19871021 201001 1 002</span>
+                    <span class="fw-bold underline">{{ $namaPptk }}</span><br>
+                    <span style="font-size: 7pt;">NIP. {{ $nipPptk }}</span>
                 </td>
                 <td style="width: 25%; vertical-align: top; text-align: center; font-size: 8pt;">
                     Lunas dibayar,<br>Bendahara Pengeluaran Pembantu
@@ -220,9 +237,6 @@
         </table>
     </div>
 
-    <div class="no-print" style="position: fixed; bottom: 20px; right: 20px;">
-        <button onclick="window.print()" style="padding: 10px 20px; background-color: #4caf50; color: white; border: none; border-radius: 5px; cursor: pointer;">Print</button>
-        <a href="{{ route('administrasi.index') }}" style="padding: 10px 20px; background-color: #2196f3; color: white; text-decoration: none; border-radius: 5px; margin-left: 10px; display: inline-block;">Kembali</a>
-    </div>
+    
 </body>
 </html>

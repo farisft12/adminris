@@ -4,6 +4,7 @@ use App\Http\Controllers\Admin\AdminDashboardController;
 use App\Http\Controllers\Admin\DataOverviewController;
 use App\Http\Controllers\Admin\EtalaseController;
 use App\Http\Controllers\Admin\KodeRekeningController;
+use App\Http\Controllers\Admin\NpdSettingController;
 use App\Http\Controllers\Admin\PejabatController;
 use App\Http\Controllers\Admin\PerpajakanController;
 use App\Http\Controllers\Admin\PptkController;
@@ -17,6 +18,9 @@ Route::get('/', AdminDashboardController::class)->name('admin.dashboard');
 // New pages
 Route::get('users', [UserController::class, 'index'])->name('admin.users.index');
 Route::patch('users/{user}/toggle-block', [UserController::class, 'toggleBlock'])->name('admin.users.toggle-block');
+Route::patch('users/{user}/approve', [UserController::class, 'approve'])->name('admin.users.approve');
+Route::patch('users/{user}/role', [UserController::class, 'updateRole'])->name('admin.users.update-role');
+Route::delete('users/{user}', [UserController::class, 'destroy'])->name('admin.users.destroy');
 Route::get('data-overview', [DataOverviewController::class, 'index'])->name('admin.data-overview');
 Route::get('pejabat', [PejabatController::class, 'index'])->name('admin.pejabat.index');
 Route::put('pejabat', [PejabatController::class, 'update'])->name('admin.pejabat.update');
@@ -29,10 +33,14 @@ Route::post('kode-rekenings/{kode_rekening}/etalases', [EtalaseController::class
 Route::delete('etalases/{etalase}', [EtalaseController::class, 'destroy'])->name('admin.etalases.destroy');
 Route::resource('pptks', PptkController::class)->except(['show'])->names('admin.pptks');
 
+Route::get('npd-settings', [NpdSettingController::class, 'index'])->name('admin.npd-settings.index');
+Route::put('npd-settings/texts', [NpdSettingController::class, 'updateTexts'])->name('admin.npd-settings.texts.update');
+Route::post('npd-settings/kegiatans', [NpdSettingController::class, 'storeKegiatan'])->name('admin.npd-settings.kegiatans.store');
+Route::put('npd-settings/kegiatans/{kegiatan}', [NpdSettingController::class, 'updateKegiatan'])->name('admin.npd-settings.kegiatans.update');
+
 Route::get('perpajakan', [PerpajakanController::class, 'edit'])->name('admin.perpajakan.edit');
 Route::put('perpajakan', [PerpajakanController::class, 'update'])->name('admin.perpajakan.update');
 
 Route::get('pptk-assign', [PptkController::class, 'assignIndex'])->name('admin.pptk.assign');
 Route::post('pptk-assign', [PptkController::class, 'assignStore'])->name('admin.pptk.assign.store');
-
 

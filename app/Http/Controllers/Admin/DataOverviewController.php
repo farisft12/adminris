@@ -22,13 +22,13 @@ class DataOverviewController extends Controller
             'sub_kegiatans'  => SubKegiatan::whereHas('year', fn($q) => $q->where('tahun', $activeYear))->count(),
             'kode_rekenings' => KodeRekening::count(),
             'total_anggaran' => SubKegiatan::whereHas('year', fn($q) => $q->where('tahun', $activeYear))->sum('anggaran'),
-            'total_realisasi'=> Administrasi::whereYear('tanggal_nota_persetujuan', $activeYear)->selectRaw('SUM(tagihan + COALESCE(ppn, 0) + COALESCE(pph23, 0) + COALESCE(pph21, 0)) as total')->value('total') ?? 0,
+            'total_realisasi'=> Administrasi::whereYear('tanggal_nota_persetujuan', $activeYear)->selectRaw('SUM(tagihan) as total')->value('total') ?? 0,
         ];
 
         // Chart 1: Anggaran vs Realisasi (Top 10)
         $chartAnggaran = SubKegiatan::whereHas('year', fn($q) => $q->where('tahun', $activeYear))
             ->select('sub_kegiatans.*')
-            ->selectRaw('(SELECT SUM(tagihan + COALESCE(ppn, 0) + COALESCE(pph23, 0) + COALESCE(pph21, 0)) FROM administrasis WHERE administrasis.sub_kegiatan_id = sub_kegiatans.id) as realisasi')
+            ->selectRaw('(SELECT SUM(tagihan) FROM administrasis WHERE administrasis.sub_kegiatan_id = sub_kegiatans.id) as realisasi')
             ->orderByDesc('anggaran')
             ->limit(10)
             ->get()
@@ -44,7 +44,7 @@ class DataOverviewController extends Controller
         // Chart 2: Realisasi Anggaran per Bulan (Rp)
         $chartBulanan = Administrasi::selectRaw("
                 TO_CHAR(tanggal_nota_persetujuan, 'Mon') as label, 
-                SUM(tagihan + COALESCE(ppn, 0) + COALESCE(pph23, 0) + COALESCE(pph21, 0)) as value, 
+                SUM(tagihan) as value, 
                 EXTRACT(MONTH FROM tanggal_nota_persetujuan) as month_num
             ")
             ->whereYear('tanggal_nota_persetujuan', $activeYear)
@@ -55,7 +55,7 @@ class DataOverviewController extends Controller
         // Data Table: Detail per Sub Kegiatan
         $subKegiatanList = SubKegiatan::whereHas('year', fn($q) => $q->where('tahun', $activeYear))
             ->select('sub_kegiatans.*')
-            ->selectRaw('(SELECT SUM(tagihan + COALESCE(ppn, 0) + COALESCE(pph23, 0) + COALESCE(pph21, 0)) FROM administrasis WHERE administrasis.sub_kegiatan_id = sub_kegiatans.id) as realisasi')
+            ->selectRaw('(SELECT SUM(tagihan) FROM administrasis WHERE administrasis.sub_kegiatan_id = sub_kegiatans.id) as realisasi')
             ->orderBy('nama_sub_kegiatan')
             ->paginate(15);
 

@@ -64,6 +64,36 @@
                     </table>
                 </div>
 
+                <h2 class="mb-2 mt-8 text-sm font-semibold text-slate-700">Administrasi yang dicairkan (isi SPTJB)</h2>
+                @if($administrasis->isEmpty())
+                    <div class="rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-800">
+                        NPD ini belum terhubung ke data administrasi, jadi SPTJB dan potongan pajak akan kosong. Buka <strong>Edit NPD</strong> lalu centang administrasinya.
+                    </div>
+                @else
+                    <div class="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
+                        <table class="min-w-full divide-y divide-slate-200 text-sm">
+                            <thead class="bg-slate-50 text-xs font-semibold uppercase tracking-wider text-slate-600">
+                                <tr>
+                                    <th class="px-4 py-3 text-left">Tanggal</th>
+                                    <th class="px-4 py-3 text-left">Penerima</th>
+                                    <th class="px-4 py-3 text-left">Uraian</th>
+                                    <th class="px-4 py-3 text-right">Tagihan</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-200">
+                                @foreach($administrasis->sortBy('tanggal_nota_persetujuan') as $a)
+                                    <tr>
+                                        <td class="whitespace-nowrap px-4 py-3 text-slate-600">{{ $a->tanggal_nota_persetujuan?->format('d/m/Y') }}</td>
+                                        <td class="px-4 py-3 text-slate-900">{{ $a->penerima ?: '-' }}</td>
+                                        <td class="px-4 py-3 text-slate-600">{{ $a->uraian_belanja }}</td>
+                                        <td class="whitespace-nowrap px-4 py-3 text-right text-slate-900">Rp {{ number_format($a->tagihan, 0, ',', '.') }}</td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                @endif
+
                 <div class="no-print mt-8 flex flex-wrap gap-3">
                     <a href="{{ route('sub-kegiatan.npd.edit', [$subKegiatan, $npd]) }}" class="inline-flex items-center rounded-lg border border-slate-300 px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50">
                         <svg class="mr-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>

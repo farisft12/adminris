@@ -39,8 +39,8 @@
                 <dd class="mt-1 text-slate-900">{{ number_format($administrasi->ppn ?? 0, 0, ',', '.') }} / {{ number_format($administrasi->pph23 ?? 0, 0, ',', '.') }} / {{ number_format($administrasi->pph21 ?? 0, 0, ',', '.') }}</dd>
             </div>
             <div>
-                <dt class="text-sm font-medium text-slate-500">Total</dt>
-                <dd class="mt-1 font-medium text-slate-900">{{ number_format($administrasi->total, 0, ',', '.') }}</dd>
+                <dt class="text-sm font-medium text-slate-500">Jumlah Dibayar (setelah potong pajak)</dt>
+                <dd class="mt-1 font-medium text-slate-900">{{ number_format($administrasi->total_bersih, 0, ',', '.') }}</dd>
             </div>
             @if($administrasi->keterangan)
             <div class="sm:col-span-2">

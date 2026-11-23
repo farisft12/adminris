@@ -115,14 +115,14 @@
                                         @else
                                             <i class="fa-solid fa-users-gear text-[8px]"></i>
                                         @endif
-                                        {{ $u->role ?? 'user' }}
+                                        {{ $u->role ?? \App\Models\User::ROLE_STAFF }}
                                     </span>
                                 </td>
                                 <td class="px-10 py-6">
                                     <div class="flex items-center gap-2">
-                                        <div class="h-2 w-2 rounded-full {{ $u->is_active ? 'bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]' : 'bg-rose-500 shadow-[0_0_8px_rgba(244,63,94,0.5)]' }}"></div>
-                                        <span class="text-xs font-black {{ $u->is_active ? 'text-emerald-700' : 'text-rose-700' }}">
-                                            {{ $u->is_active ? 'TER-AKTIVASI' : 'DIBLOKIR' }}
+                                        <div class="h-2 w-2 rounded-full {{ ! $u->is_approved ? 'bg-amber-500' : ($u->is_active ? 'bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]' : 'bg-rose-500 shadow-[0_0_8px_rgba(244,63,94,0.5)]') }}"></div>
+                                        <span class="text-xs font-black {{ ! $u->is_approved ? 'text-amber-700' : ($u->is_active ? 'text-emerald-700' : 'text-rose-700') }}">
+                                            {{ ! $u->is_approved ? 'MENUNGGU PERSETUJUAN' : ($u->is_active ? 'TERAKTIVASI' : 'DIBLOKIR') }}
                                         </span>
                                     </div>
                                 </td>
@@ -131,17 +131,46 @@
                                     <div class="text-[9px] font-bold text-slate-400 italic mt-0.5">{{ $u->created_at?->diffForHumans() }}</div>
                                 </td>
                                 <td class="px-10 py-6 text-right">
-                                    <form action="{{ route('admin.users.toggle-block', $u) }}" method="POST">
-                                        @csrf @method('PATCH')
-                                        <button type="submit" 
-                                            class="inline-flex items-center gap-2 rounded-2xl px-5 py-2.5 text-[10px] font-black uppercase tracking-widest transition-all active:scale-95 border
-                                            {{ $u->is_active 
-                                                ? 'bg-rose-50 text-rose-600 border-rose-100 hover:bg-rose-600 hover:text-white hover:shadow-lg hover:shadow-rose-500/20' 
-                                                : 'bg-indigo-600 text-white border-indigo-600 hover:bg-indigo-700 hover:shadow-lg hover:shadow-indigo-500/30' }}">
-                                            <i class="fa-solid {{ $u->is_active ? 'fa-lock' : 'fa-lock-open' }} text-[9px]"></i>
-                                            {{ $u->is_active ? 'Blokir Akses' : 'Buka Blokir' }}
-                                        </button>
-                                    </form>
+                                    <div class="flex items-center justify-end gap-2">
+                                        {{-- Edit Role Form --}}
+                                        <form action="{{ route('admin.users.update-role', $u) }}" method="POST" class="flex items-center gap-2">
+                                            @csrf @method('PATCH')
+                                            <select name="role" onchange="this.form.submit()"
+                                                class="rounded-xl border border-slate-200 bg-white px-3 py-2 text-[10px] font-bold uppercase tracking-wider text-slate-600 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 cursor-pointer">
+                                                <option value="{{ \App\Models\User::ROLE_STAFF }}" {{ ! $u->isAdmin() ? 'selected' : '' }}>STAFF</option>
+                                                <option value="{{ \App\Models\User::ROLE_ADMIN }}" {{ $u->isAdmin() ? 'selected' : '' }}>ADMIN</option>
+                                            </select>
+                                        </form>
+
+                                        @if(! $u->is_approved)
+                                            <form action="{{ route('admin.users.approve', $u) }}" method="POST">
+                                                @csrf @method('PATCH')
+                                                <button type="submit" class="inline-flex items-center gap-2 rounded-2xl border border-emerald-100 bg-emerald-50 px-4 py-2.5 text-[10px] font-black uppercase tracking-widest text-emerald-600 transition-all hover:bg-emerald-600 hover:text-white">
+                                                    <i class="fa-solid fa-check text-[9px]"></i> Setujui
+                                                </button>
+                                            </form>
+                                        @endif
+
+                                        {{-- Toggle Block Form --}}
+                                        <form action="{{ route('admin.users.toggle-block', $u) }}" method="POST">
+                                            @csrf @method('PATCH')
+                                            <button type="submit"
+                                                class="inline-flex items-center gap-2 rounded-2xl px-4 py-2.5 text-[10px] font-black uppercase tracking-widest transition-all active:scale-95 border
+                                                {{ $u->is_active
+                                                    ? 'bg-rose-50 text-rose-600 border-rose-100 hover:bg-rose-600 hover:text-white hover:shadow-lg hover:shadow-rose-500/20'
+                                                    : 'bg-indigo-600 text-white border-indigo-600 hover:bg-indigo-700 hover:shadow-lg hover:shadow-indigo-500/30' }}">
+                                                <i class="fa-solid {{ $u->is_active ? 'fa-lock' : 'fa-lock-open' }} text-[9px]"></i>
+                                                {{ $u->is_active ? 'Blokir' : 'Buka' }}
+                                            </button>
+                                        </form>
+
+                                        <form action="{{ route('admin.users.destroy', $u) }}" method="POST" onsubmit='return confirm(@js('Hapus ' . $u->name . ' secara permanen? Data terkait juga dapat ikut terhapus dan tindakan ini tidak dapat dibatalkan.'))'>
+                                            @csrf @method('DELETE')
+                                            <button type="submit" class="inline-flex items-center gap-2 rounded-2xl border border-rose-100 bg-white px-4 py-2.5 text-[10px] font-black uppercase tracking-widest text-rose-600 transition-all hover:bg-rose-600 hover:text-white">
+                                                <i class="fa-solid fa-trash-can text-[9px]"></i> Hapus
+                                            </button>
+                                        </form>
+                                    </div>
                                 </td>
                             </tr>
                         @empty

@@ -9,7 +9,13 @@
         : null;
     $namaPptk = $pptk ? $pptk->nama_pptk : 'Eldinar Raina Arijadi, A.Md';
     $nipPptk = $pptk ? $pptk->nip : '19780221 200901 2 001';
-    $terbilangText = ucwords(strtolower(trim(\App\Services\TerbilangService::numberToWords($administrasi->total)))).' Rupiah';
+    $ppn = (float) ($administrasi->ppn ?? 0);
+    $pph23 = (float) ($administrasi->pph23 ?? 0);
+    $pph21 = (float) ($administrasi->pph21 ?? 0);
+    $tagihan = (float) ($administrasi->tagihan ?? 0);
+    $sisa = $tagihan - $ppn;
+    $jumlahDibayar = $sisa - $pph21 - $pph23;
+    $terbilangText = ucwords(strtolower(trim(\App\Services\TerbilangService::numberToWords($tagihan)))).' Rupiah';
     $logoPath = public_path('img/logo_bjm.png');
     $logoSrc = file_exists($logoPath)
         ? 'data:image/png;base64,' . base64_encode(file_get_contents($logoPath))
@@ -25,9 +31,9 @@
         @page { size: A4; margin: 12mm; }
         * { box-sizing: border-box; }
         html, body { margin: 0; padding: 0; width: 100%; }
-        body { font-family: Arial, sans-serif; background-color: #f0f0f0; font-size: 11pt; }
+        body { font-family: Arial, sans-serif; background-color: #fff; font-size: 11pt; }
         .container {
-            background-color: white;
+            background-color: #fff;
             width: 100%;
             max-width: 186mm;
             margin: 0 auto;
@@ -168,7 +174,7 @@
                     <th>TERBILANG :</th>
                 </tr>
                 <tr>
-                    <td style="text-align: center;" class="center">Rp. {{ number_format($administrasi->total, 0, ',', '.') }}</td>
+                    <td style="text-align: center;" class="center">Rp. {{ number_format($tagihan, 0, ',', '.') }}</td>
                     <td style="text-align: center;" class="italic">{{ $terbilangText }}</td>
                 </tr>
             </table>

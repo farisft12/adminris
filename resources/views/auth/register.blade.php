@@ -30,6 +30,7 @@
 
         <div class="glass-card rounded-[2.5rem] shadow-2xl shadow-blue-900/5 p-8 sm:p-10 relative">
             <h2 class="text-2xl font-bold text-gray-800 mb-6 text-center">Buat Akun Pribadi</h2>
+            <p class="-mt-3 mb-6 text-center text-sm text-gray-500">Akun baru dapat digunakan setelah disetujui admin.</p>
 
             <form method="POST" action="{{ route('register') }}" class="space-y-4">
                 @csrf

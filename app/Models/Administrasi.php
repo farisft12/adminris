@@ -34,9 +34,40 @@ class Administrasi extends Model
         ];
     }
 
+    protected static function booted(): void
+    {
+        // Pindah sub kegiatan = keluar dari NPD lamanya (NPD per sub kegiatan).
+        static::updating(function (self $administrasi) {
+            if ($administrasi->npd_id && $administrasi->isDirty('sub_kegiatan_id')) {
+                $administrasi->npd_id = null;
+            }
+        });
+
+        // Jaga total NPD tetap sama dengan tagihan administrasi yang terhubung.
+        static::saved(function (self $administrasi) {
+            if (! $administrasi->wasChanged(['tagihan', 'kode_rekening_id', 'npd_id', 'sub_kegiatan_id'])) {
+                return;
+            }
+
+            $npdIds = array_filter([$administrasi->npd_id, $administrasi->getOriginal('npd_id')]);
+            Npd::whereIn('id', array_unique($npdIds))->get()->each->recalculateDetails();
+        });
+
+        static::deleted(function (self $administrasi) {
+            if ($administrasi->npd_id) {
+                Npd::find($administrasi->npd_id)?->recalculateDetails();
+            }
+        });
+    }
+
     public function subKegiatan(): BelongsTo
     {
         return $this->belongsTo(SubKegiatan::class, 'sub_kegiatan_id');
+    }
+
+    public function npd(): BelongsTo
+    {
+        return $this->belongsTo(Npd::class, 'npd_id');
     }
 
     public function kodeRekening(): BelongsTo
@@ -52,15 +83,6 @@ class Administrasi extends Model
     public function createdBy(): BelongsTo
     {
         return $this->belongsTo(User::class, 'created_by');
-    }
-
-    public function getTotalAttribute(): float
-    {
-        $tagihan = (float) $this->tagihan;
-        $ppn = (float) ($this->ppn ?? 0);
-        $pph23 = (float) ($this->pph23 ?? 0);
-        $pph21 = (float) ($this->pph21 ?? 0);
-        return $tagihan + $ppn + $pph23 + $pph21;
     }
 
     /** Total setelah pajak dipotong: Tagihan - (PPN + PPH23 + PPH21) */
